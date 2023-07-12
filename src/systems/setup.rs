@@ -14,7 +14,7 @@ pub fn spawn_player(
 ) {
     commands.spawn((
         SpriteBundle {
-            transform: Transform::from_xyz( 100.0, 100.0, 0.0).with_scale(Vec3::splat(0.25)),
+            transform: Transform::from_xyz( 0.0, -300.0, 0.0).with_scale(Vec3::splat(0.25)),
             texture: asset_server.load("sprites/tank.png"),
             ..default()
         },
