@@ -1,11 +1,15 @@
 mod components;
+mod conditions;
 mod systems;
 
 use bevy::prelude::*;
 
 use crate::systems::confine_player_movement as systems_confine_player_movement;
 use crate::systems::setup as systems_setup;
+use crate::systems::spawn as systems_spawn;
 use crate::systems::keyboard as systems_keyboard;
+
+use crate::conditions::player as player_conditions;
 
 fn main(){
   App::new()
@@ -13,7 +17,7 @@ fn main(){
         DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 title: "Tanks-rs".into(),
-                resolution: (1024., 768.).into(),
+                resolution: (1920., 1080.).into(),
                 resizable: false,
                 ..default()
             }),
@@ -22,11 +26,14 @@ fn main(){
     ))
     .add_systems(Startup, (
         systems_setup::setup_window,
-        systems_setup::spawn_player,
+        systems_setup::add_player_spawn,
     ))
     .add_systems(Update, (
         systems_keyboard::keyboard_events,
         systems_confine_player_movement::keep_player_in_window,
-    ))
+    ).run_if(player_conditions::is_player_spawned))
+    .add_systems(Update, (
+        systems_spawn::spawn_player,
+    ).run_if(player_conditions::is_not_player_spawned))
     .run();
 }
