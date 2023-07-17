@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::components::spawn_player::SpawnPlayer;
+use crate::constants;
 
 pub fn setup_window(
     mut commands: Commands,
@@ -14,7 +15,7 @@ pub fn add_player_spawn(
 ) {
     commands.spawn((
         SpriteBundle {
-            transform: Transform::from_xyz( 0.0, -450.0, 0.0).with_scale(Vec3::splat(0.25)),
+            transform: Transform::from_xyz( constants::TANK_DIMENSION/2., constants::WINDOW_HEIGHT / -2. + constants::TANK_DIMENSION, constants::Z_INDEX_SPAWN),
             texture: asset_server.load("sprites/spawn_player.png"),
             ..default()
         },

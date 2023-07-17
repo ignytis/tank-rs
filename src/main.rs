@@ -1,8 +1,11 @@
 mod components;
 mod conditions;
+mod constants;
 mod systems;
 
 use bevy::prelude::*;
+
+use crate::constants::{WINDOW_WIDTH, WINDOW_HEIGHT};
 
 use crate::systems::confine_player_movement as systems_confine_player_movement;
 use crate::systems::setup as systems_setup;
@@ -17,7 +20,7 @@ fn main(){
         DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 title: "Tanks-rs".into(),
-                resolution: (1920., 1080.).into(),
+                resolution: (WINDOW_WIDTH, WINDOW_HEIGHT).into(),
                 resizable: false,
                 ..default()
             }),

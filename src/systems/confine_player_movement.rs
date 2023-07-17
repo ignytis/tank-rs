@@ -2,9 +2,9 @@ use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 
 use crate::components::player::Player;
+use crate::constants;
 
-const HALF_PLAYER_SIZE_X: f32 = 352.0 / 2.0;
-const HALF_PLAYER_SIZE_Y: f32 = 354.0 / 2.0;
+const HALF_PLAYER_SIZE: f32 = constants::TANK_DIMENSION / 2.;
 
 /// Keeps player's tank in the game window
 pub fn keep_player_in_window(
@@ -18,10 +18,10 @@ pub fn keep_player_in_window(
 
     let window = window_query.get_single().unwrap();
 
-    let x_min = window.width() / -2.0 + HALF_PLAYER_SIZE_X * player_transform.scale.x;
-    let x_max = window.width() / 2.0 - HALF_PLAYER_SIZE_X * player_transform.scale.x;
-    let y_min = window.height() / -2.0 + HALF_PLAYER_SIZE_Y * player_transform.scale.y;
-    let y_max = window.height() / 2.0 - HALF_PLAYER_SIZE_Y * player_transform.scale.y;
+    let x_min = window.width() / -2.0 + HALF_PLAYER_SIZE;
+    let x_max = window.width() / 2.0 - HALF_PLAYER_SIZE;
+    let y_min = window.height() / -2.0 + HALF_PLAYER_SIZE;
+    let y_max = window.height() / 2.0 - HALF_PLAYER_SIZE;
 
     let mut translation = player_transform.translation;
     if translation.x < x_min {

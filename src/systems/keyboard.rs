@@ -10,11 +10,6 @@ pub fn keyboard_events(
     input: Res<Input<KeyCode>>,
     mut player_query: Query<(&mut Transform, With<Player>)>,
 ) {
-    // No player is spawned
-    if player_query.is_empty() {
-        return;
-    }
-
     let (mut transform, _) = player_query.single_mut();
     if input.pressed(KeyCode::Up) {
         let v = transform.rotation * Vec3::Y * MOVEMENT_FACTOR_FORWARD;
