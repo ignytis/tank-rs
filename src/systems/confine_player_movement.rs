@@ -6,7 +6,7 @@ use crate::constants;
 
 const HALF_PLAYER_SIZE: f32 = constants::TANK_DIMENSION / 2.;
 
-/// Keeps player's tank in the game window
+/// Keeps player tank in the game window
 pub fn keep_player_in_window(
     mut player_query: Query<&mut Transform, With<Player>>,
     window_query: Query<&Window, With<PrimaryWindow>>,

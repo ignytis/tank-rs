@@ -12,6 +12,7 @@ use crate::systems::setup as systems_setup;
 use crate::systems::spawn as systems_spawn;
 use crate::systems::keyboard as systems_keyboard;
 
+use crate::conditions::enemy as enemy_conditions;
 use crate::conditions::player as player_conditions;
 
 fn main(){
@@ -30,6 +31,7 @@ fn main(){
     .add_systems(Startup, (
         systems_setup::setup_window,
         systems_setup::add_player_spawn,
+        systems_setup::add_enemy_spawn,
     ))
     .add_systems(Update, (
         systems_keyboard::keyboard_events,
@@ -38,5 +40,8 @@ fn main(){
     .add_systems(Update, (
         systems_spawn::spawn_player,
     ).run_if(player_conditions::is_not_player_spawned))
+    .add_systems(Update, (
+        systems_spawn::spawn_enemy,
+    ).run_if(enemy_conditions::not_all_enemies_spawned))
     .run();
 }

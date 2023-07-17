@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use bevy::prelude::*;
 
-/// Player's spawn
+/// Player spawn
 #[derive(Component)]
 pub struct SpawnPlayer {
     pub timer: Timer,
