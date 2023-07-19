@@ -56,7 +56,7 @@ pub fn spawn_enemy(
         commands.spawn((
             SpriteBundle {
                 transform: Transform::from_xyz(transl.x, transl.y, Z_INDEX_TANK)
-                    .with_rotation(Quat::from_rotation_z(rng.gen_range((0. as f32)..(1.5*PI as f32)))), // randomize direction
+                    .with_rotation(Quat::from_rotation_z(rng.gen_range((0. as f32)..(2.*PI as f32)))), // randomize direction
                 texture: asset_server.load("sprites/tank_enemy.png"),
                 ..default()
             },
