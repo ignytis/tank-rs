@@ -17,7 +17,6 @@ pub fn keep_player_in_window(
     };
 
     let window = window_query.get_single().unwrap();
-
     let x_min = window.width() / -2.0 + HALF_PLAYER_SIZE;
     let x_max = window.width() / 2.0 - HALF_PLAYER_SIZE;
     let y_min = window.height() / -2.0 + HALF_PLAYER_SIZE;

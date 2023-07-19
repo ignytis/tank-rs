@@ -1,4 +1,7 @@
+use std::f64::consts::PI;
+
 use bevy::prelude::*;
+use rand::Rng;
 
 use crate::components::player::Player;
 use crate::components::enemy::Enemy;
@@ -21,10 +24,10 @@ pub fn spawn_player(
         return;
     }
 
-    let pt = player_spawn_transform.translation;
+    let transl = player_spawn_transform.translation;
     commands.spawn((
         SpriteBundle {
-            transform: Transform::from_xyz(pt.x, pt.y, Z_INDEX_TANK),
+            transform: Transform::from_xyz(transl.x, transl.y, Z_INDEX_TANK),
             texture: asset_server.load("sprites/tank_player.png"),
             ..default()
         },
@@ -40,6 +43,8 @@ pub fn spawn_enemy(
     mut enemy_spawn_query: Query<(&mut SpawnEnemy, &Transform), With<SpawnEnemy>>,
     time: Res<Time>
 ) {
+    let mut rng = rand::thread_rng();
+    
     for (mut enemy_spawn, enemy_spawn_transform) in enemy_spawn_query.iter_mut() {
         enemy_spawn.timer.tick(time.delta());
 
@@ -47,10 +52,11 @@ pub fn spawn_enemy(
             continue;
         }
     
-        let pt = enemy_spawn_transform.translation;
+        let transl = enemy_spawn_transform.translation;
         commands.spawn((
             SpriteBundle {
-                transform: Transform::from_xyz(pt.x, pt.y, Z_INDEX_TANK),
+                transform: Transform::from_xyz(transl.x, transl.y, Z_INDEX_TANK)
+                    .with_rotation(Quat::from_rotation_z(rng.gen_range((0. as f32)..(1.5*PI as f32)))), // randomize direction
                 texture: asset_server.load("sprites/tank_enemy.png"),
                 ..default()
             },
