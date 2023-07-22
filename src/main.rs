@@ -1,6 +1,7 @@
 mod components;
 mod conditions;
 mod constants;
+mod geometry;
 mod systems;
 
 use bevy::prelude::*;
@@ -8,6 +9,7 @@ use bevy::prelude::*;
 use crate::constants::{WINDOW_WIDTH, WINDOW_HEIGHT};
 
 use crate::systems::confine_player_movement as systems_confine_player_movement;
+use crate::systems::enemy_movement as systems_enemy_movement;
 use crate::systems::setup as systems_setup;
 use crate::systems::spawn as systems_spawn;
 use crate::systems::keyboard as systems_keyboard;
@@ -43,5 +45,9 @@ fn main(){
     .add_systems(Update, (
         systems_spawn::spawn_enemy,
     ).run_if(enemy_conditions::not_all_enemies_spawned))
+    .add_systems(Update, (
+        systems_enemy_movement::move_enemies,
+        systems_enemy_movement::change_enemy_direction,
+    ))
     .run();
 }

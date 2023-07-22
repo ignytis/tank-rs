@@ -60,7 +60,7 @@ pub fn spawn_enemy(
                 texture: asset_server.load("sprites/tank_enemy.png"),
                 ..default()
             },
-            Enemy{},
+            Enemy::default(),
         ));
         enemy_spawn.timer.reset();
     }
