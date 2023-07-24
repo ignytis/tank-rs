@@ -6,13 +6,12 @@ use rand::Rng;
 
 use crate::constants;
 use crate::components::enemy::{Enemy, MovementMode};
-use crate::geometry::quat_to_azimuth;
+use crate::geometry::{azimuth_to_quat_negative_z, get_closer_direction};
 
 // These are the same as player's. Maybe drag them to constant module?
 const HALF_ENEMY_SIZE: f32 = constants::TANK_DIMENSION / 2.;
 const MOVEMENT_FACTOR_FORWARD: f32 = 3.0;
 const ROTATION_FACTOR: f32 = 0.05;
-
 
 /// Keeps moves enemy tank forward
 pub fn move_enemies(
@@ -24,12 +23,30 @@ pub fn move_enemies(
                 let v = transform.rotation * Vec3::Y * MOVEMENT_FACTOR_FORWARD;
                 transform.translation += v;
             },
-            MovementMode::Rotate(dest_rotation) => {
-                if quat_to_azimuth(transform.rotation) <= quat_to_azimuth(dest_rotation) {
-                    enemy.start_move();
+            MovementMode::Rotate(dest_rotation, direction, is_prev_angle_increased) => {
+                let dir = if direction {1.} else {-1.};
+                let angle_before = transform.rotation.angle_between(dest_rotation);
+                enemy.azimuth += ROTATION_FACTOR * dir;
+                if enemy.azimuth > 2.*PI {
+                    enemy.azimuth -= 2.*PI;
+                } else if enemy.azimuth < 2.*PI {
+                    enemy.azimuth += 2.*PI;
                 }
+                transform.rotation = azimuth_to_quat_negative_z(enemy.azimuth);
 
-                transform.rotate_local_z(ROTATION_FACTOR);
+                let angle_after = transform.rotation.angle_between(dest_rotation);
+                let is_current_angle_increased = angle_after > angle_before;
+
+                match is_prev_angle_increased {
+                    None => {
+                        enemy.start_rotate(dest_rotation, direction, Some(is_current_angle_increased));
+                    },
+                    Some(is_prev_angle_increased) => {
+                        if is_prev_angle_increased != is_current_angle_increased { // previously the ancle in/de-creased, now it's otherwise
+                            enemy.start_move();
+                        }
+                    },
+                };
             },
         };
     }
@@ -47,6 +64,12 @@ pub fn change_enemy_direction(
     let y_max = window.height() / 2.0 - HALF_ENEMY_SIZE;
 
     for (mut transform, mut enemy) in query.iter_mut() {
+        // Skip if tank is already rotating
+        match enemy.movement_mode {
+            MovementMode::Rotate(_, _, _) => continue,
+            _ => {},
+        };
+
         let mut translation = transform.translation;
         let is_min_x_reached = translation.x < x_min;
         let is_max_x_reached = translation.x > x_max;
@@ -58,21 +81,26 @@ pub fn change_enemy_direction(
         }
         
         let mut rng = rand::thread_rng();
-        let random_angle = rng.gen_range((0. as f32)..(PI as f32));
-
-        if translation.x < x_min {
+        let rotation_angle_relative = rng.gen_range((0. as f32)..(PI as f32));
+        let rotation_angle_shift = if translation.x < x_min {
             translation.x = x_min;
-            enemy.start_rotate(Quat::from_rotation_z(random_angle));
+            0.
         } else if translation.x > x_max {
             translation.x = x_max;
-            enemy.start_rotate(Quat::from_rotation_z(random_angle + PI));
+            PI
         } else if translation.y < y_min {
             translation.y = y_min;
-            enemy.start_rotate(Quat::from_rotation_z(random_angle + PI*1.5));
+            PI*1.5
         } else if translation.y > y_max {
             translation.y = y_max;
-            enemy.start_rotate(Quat::from_rotation_z(random_angle + PI*0.5));
-        }
+            PI*0.5
+        } else { 0. };// will bever happen
         transform.translation = translation;
+
+        let target_quat = azimuth_to_quat_negative_z(rotation_angle_relative + rotation_angle_shift);
+        let tank_quat = transform.rotation;
+        let direction = get_closer_direction(tank_quat, target_quat);
+
+        enemy.start_rotate(target_quat, direction, None);
     }
 }
