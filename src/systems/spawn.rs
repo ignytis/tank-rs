@@ -1,4 +1,4 @@
-use std::f64::consts::PI;
+use std::f64::consts::TAU;
 
 use bevy::prelude::*;
 use rand::Rng;
@@ -64,7 +64,7 @@ pub fn spawn_enemy(
     
         let transl = enemy_spawn_transform.translation;
         let mut enemy = Enemy::default();
-        enemy.azimuth = rng.gen_range((0. as f32)..(2.*PI as f32));
+        enemy.azimuth = rng.gen_range((0. as f32)..(TAU as f32));
         commands.spawn((
             SpriteBundle {
                 transform: Transform::from_xyz(transl.x, transl.y, Z_INDEX_TANK)

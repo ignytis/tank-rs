@@ -1,20 +1,18 @@
-use std::f32::consts::PI;
+use std::f32::consts::{PI, TAU};
 
 use bevy::prelude::*;
-
-const FULL_CIRCLE_RAD: f32 = 2. * PI;
 
 /// Azimuth = positive float from 0.0 to 2*PI. Increments clockwise
 pub fn quat_to_azimuth(rotation: Quat) -> f32 {
     let (axis, angle) = rotation.to_axis_angle();
     let mut az = if axis.z >= 0. {
-        FULL_CIRCLE_RAD - angle
+        TAU - angle
     } else {
         angle
     };
 
-    while az >= FULL_CIRCLE_RAD {
-        az -= FULL_CIRCLE_RAD;
+    while az >= TAU {
+        az -= TAU;
     }
     az
 }
@@ -25,7 +23,7 @@ pub fn get_closer_direction(from: Quat, to: Quat) -> bool {
     let to_az = quat_to_azimuth(to);
 
     if from_az < to_az {
-        from_az += FULL_CIRCLE_RAD;
+        from_az += TAU;
     }
 
     from_az - to_az >= PI

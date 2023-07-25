@@ -1,4 +1,4 @@
-use std::f32::consts::PI;
+use std::f32::consts::{PI, FRAC_PI_2, TAU};
 
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
@@ -27,10 +27,10 @@ pub fn move_enemies(
                 let dir = if direction {1.} else {-1.};
                 let angle_before = transform.rotation.angle_between(dest_rotation);
                 enemy.azimuth += ROTATION_FACTOR * dir;
-                if enemy.azimuth > 2.*PI {
-                    enemy.azimuth -= 2.*PI;
-                } else if enemy.azimuth < 2.*PI {
-                    enemy.azimuth += 2.*PI;
+                if enemy.azimuth > TAU {
+                    enemy.azimuth -= TAU;
+                } else if enemy.azimuth < TAU {
+                    enemy.azimuth += TAU;
                 }
                 transform.rotation = azimuth_to_quat_negative_z(enemy.azimuth);
 
@@ -90,10 +90,10 @@ pub fn change_enemy_direction(
             PI
         } else if translation.y < y_min {
             translation.y = y_min;
-            PI*1.5
+            PI + FRAC_PI_2
         } else if translation.y > y_max {
             translation.y = y_max;
-            PI*0.5
+            FRAC_PI_2
         } else { 0. };// will bever happen
         transform.translation = translation;
 
