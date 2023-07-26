@@ -11,6 +11,7 @@ use crate::constants::{WINDOW_WIDTH, WINDOW_HEIGHT};
 use crate::systems::confine_player_movement as systems_confine_player_movement;
 use crate::systems::enemy_movement as systems_enemy_movement;
 use crate::systems::setup as systems_setup;
+use crate::systems::shells as systems_shells;
 use crate::systems::spawn as systems_spawn;
 use crate::systems::keyboard as systems_keyboard;
 
@@ -48,6 +49,10 @@ fn main(){
     .add_systems(Update, (
         systems_enemy_movement::move_enemies,
         systems_enemy_movement::change_enemy_direction,
+        systems_shells::enemy_shoot,
+        systems_shells::player_shoot,
+        systems_shells::shell_move,
+        systems_shells::shell_offscreen_despawn,
     ))
     .run();
 }

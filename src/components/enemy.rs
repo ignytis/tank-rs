@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use bevy::prelude::*;
 
 pub enum MovementMode {
@@ -13,6 +15,7 @@ pub enum MovementMode {
 pub struct Enemy {
     pub azimuth: f32,
     pub movement_mode: MovementMode,
+    pub shoot_timer: Timer,
 }
 
 impl Enemy {
@@ -30,6 +33,7 @@ impl Default for Enemy {
         Enemy {
             azimuth: 0.,
             movement_mode: MovementMode::Move,
+            shoot_timer: Timer::new(Duration::from_secs(1), TimerMode::Repeating)
         }
     }
 }

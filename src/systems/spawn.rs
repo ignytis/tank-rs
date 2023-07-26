@@ -25,13 +25,15 @@ pub fn spawn_player(
     }
 
     let transl = player_spawn_transform.translation;
+    let player = Player::default();
     commands.spawn((
         SpriteBundle {
-            transform: Transform::from_xyz(transl.x, transl.y, Z_INDEX_TANK),
+            transform: Transform::from_xyz(transl.x, transl.y, Z_INDEX_TANK)
+                .with_rotation(Quat::from_axis_angle(Vec3::NEG_Z, player.azimuth)),
             texture: asset_server.load("sprites/tank_player.png"),
             ..default()
         },
-        Player{},
+        player,
     ));
     player_spawn.timer.reset();
 }
@@ -68,7 +70,7 @@ pub fn spawn_enemy(
         commands.spawn((
             SpriteBundle {
                 transform: Transform::from_xyz(transl.x, transl.y, Z_INDEX_TANK)
-                    .with_rotation(Quat::from_axis_angle(Vec3::new(0., 0., -1.), enemy.azimuth)), // randomize direction
+                    .with_rotation(Quat::from_axis_angle(Vec3::NEG_Z, enemy.azimuth)), // randomize direction
                 texture: asset_server.load("sprites/tank_enemy.png"),
                 ..default()
             },
