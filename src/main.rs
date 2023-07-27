@@ -53,6 +53,7 @@ fn main(){
         systems_shells::player_shoot,
         systems_shells::shell_move,
         systems_shells::shell_offscreen_despawn,
+        systems_shells::tank_hit,
     ))
     .run();
 }

@@ -1,37 +1,29 @@
 use bevy::prelude::*;
 
-/// A shell shot by player or enemy
+/// A shell shot by player
 #[derive(Component)]
-pub struct Shell {
+pub struct PlayerShell {
     pub azimuth: f32,
-    pub shot_by: bool, // false - enemy, true - player
 }
 
-impl Shell {
-    /// Spawns enemy's shell
-    pub fn new_enemy(azimuth: f32) -> Self {
-        Shell {
+impl PlayerShell {
+    pub fn new(azimuth: f32) -> Self {
+        PlayerShell {
             azimuth,
-            shot_by: false,
-            ..default()
-        }
-    }
-
-    /// Spawns player's shell
-    pub fn new_player(azimuth: f32) -> Self {
-        Shell {
-            azimuth,
-            shot_by: true,
-            ..default()
         }
     }
 }
 
-impl Default for Shell {
-    fn default() -> Self {
-        Shell {
-            azimuth: 0.,
-            shot_by: true,
+/// A shell shot by enemy
+#[derive(Component)]
+pub struct EnemyShell {
+    pub azimuth: f32,
+}
+
+impl EnemyShell {
+    pub fn new(azimuth: f32) -> Self {
+        EnemyShell {
+            azimuth,
         }
     }
 }
