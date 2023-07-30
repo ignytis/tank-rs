@@ -15,8 +15,13 @@ pub fn spawn_player(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut player_spawn_query: Query<(&mut SpawnPlayer, &Transform), With<SpawnPlayer>>,
+    player_query: Query<&Player>,
     time: Res<Time>
 ) {
+    if !player_query.is_empty() { // if player is already spawned
+        return;
+    }
+
     let (mut player_spawn, player_spawn_transform) = player_spawn_query.single_mut();
     player_spawn.timer.tick(time.delta());
 
@@ -47,8 +52,7 @@ pub fn spawn_enemy(
     time: Res<Time>
 ) {
     let mut num_enemies = enemy_query.iter().len();
-    // A similar condition is in src/conditions/enemy.rs::not_all_enemies_spawned. Remove?
-    if num_enemies >= MAX_ENEMIES {
+    if num_enemies >= MAX_ENEMIES { // all enemies are already spawned
         return
     }
 

@@ -1,5 +1,4 @@
 mod components;
-mod conditions;
 mod constants;
 mod geometry;
 mod states;
@@ -15,9 +14,6 @@ use crate::systems::setup as systems_setup;
 use crate::systems::shells as systems_shells;
 use crate::systems::simulation_state as systems_simulation_state;
 use crate::systems::spawn as systems_spawn;
-
-use crate::conditions::enemy as enemy_conditions;
-use crate::conditions::player as player_conditions;
 
 use crate::states::SimulationState;
 
@@ -40,12 +36,8 @@ fn main(){
         systems_setup::add_enemy_spawn,
     ))
     .add_systems(Update, (
-        systems_spawn::spawn_player,
-    ).run_if(player_conditions::is_not_player_spawned))
-    .add_systems(Update, (
         systems_spawn::spawn_enemy,
-    ).run_if(enemy_conditions::not_all_enemies_spawned))
-    .add_systems(Update, (
+        systems_spawn::spawn_player,
         systems_player_movement::move_player,
         systems_player_movement::confine_player_movement,
         systems_enemy_movement::move_enemies,
