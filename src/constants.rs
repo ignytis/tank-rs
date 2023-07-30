@@ -9,4 +9,4 @@ pub const Z_INDEX_SPAWN: f32 = 10.0;
 pub const Z_INDEX_TANK: f32 = 50.0;
 pub const Z_INDEX_SHELL: f32 = 75.0;
 
-pub const MAX_ENEMIES: usize = 5;
+pub const MAX_ENEMIES: usize = 20;
