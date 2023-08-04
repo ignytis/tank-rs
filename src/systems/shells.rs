@@ -29,7 +29,7 @@ pub fn enemy_shoot(
         commands.spawn((
             SpriteBundle {
                 transform: Transform::from_xyz(transl.x, transl.y, Z_INDEX_SHELL)
-                    .with_rotation(Quat::from_axis_angle(Vec3::new(0., 0., -1.), enemy.azimuth)), // randomize direction
+                    .with_rotation(Quat::from_axis_angle(Vec3::NEG_Z, enemy.azimuth)), // randomize direction
                 texture: asset_server.load("sprites/shell.png"),
                 ..default()
             },
@@ -65,7 +65,7 @@ pub fn player_shoot(
     commands.spawn((
         SpriteBundle {
             transform: Transform::from_xyz(transl.x, transl.y, Z_INDEX_SHELL)
-                .with_rotation(Quat::from_axis_angle(Vec3::new(0., 0., -1.), azimuth)), // randomize direction
+                .with_rotation(Quat::from_axis_angle(Vec3::NEG_Z, azimuth)), // randomize direction
             texture: asset_server.load("sprites/shell.png"),
             ..default()
         },

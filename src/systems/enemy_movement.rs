@@ -1,6 +1,9 @@
+use std::borrow::BorrowMut;
+use std::collections::LinkedList;
 use std::f32::consts::{PI, FRAC_PI_2, TAU};
 
 use bevy::prelude::*;
+use bevy::utils::HashMap;
 use bevy::window::PrimaryWindow;
 use rand::Rng;
 
@@ -39,10 +42,10 @@ pub fn move_enemies(
 
                 match is_prev_angle_increased {
                     None => {
-                        enemy.start_rotate(dest_rotation, direction, Some(is_current_angle_increased));
+                        enemy.continue_rotate(dest_rotation, is_current_angle_increased);
                     },
                     Some(is_prev_angle_increased) => {
-                        if is_prev_angle_increased != is_current_angle_increased { // previously the ancle in/de-creased, now it's otherwise
+                        if is_prev_angle_increased != is_current_angle_increased { // previously the angle in/de-creased, now it's otherwise
                             enemy.start_move();
                         }
                     },
@@ -53,7 +56,7 @@ pub fn move_enemies(
 }
 
 /// Changes direction of enemy tank if it reached the screen edge
-pub fn change_enemy_direction(
+pub fn collision_with_field_edges(
     mut query: Query<(&mut Transform, &mut Enemy), With<Enemy>>,
     window_query: Query<&Window, With<PrimaryWindow>>,
 ) {
@@ -98,9 +101,39 @@ pub fn change_enemy_direction(
         transform.translation = translation;
 
         let target_quat = azimuth_to_quat_negative_z(rotation_angle_relative + rotation_angle_shift);
-        let tank_quat = transform.rotation;
-        let direction = get_closer_direction(tank_quat, target_quat);
+        enemy.start_rotate(target_quat);
+    }
+}
 
-        enemy.start_rotate(target_quat, direction, None);
+/// Rotates tanks if they collide with other tanks
+pub fn collision_with_tanks(
+    mut query: Query<(&Transform, &mut Enemy, Entity), With<Enemy>>,
+) {
+    let mut collisions: HashMap<Entity, Quat> = HashMap::new();
+    for [(transform1, enemy1, entity1), (transform2, enemy2, entity2)] in query.iter_combinations() {
+        if transform1.translation.distance(transform2.translation) > constants::TANK_DIMENSION {
+            continue
+        }
+
+
+        // TODO: randomize rotation angles for both tanks
+        // let vec_between = transform1.translation - transform2.translation;
+        // transform1.rotate(rotation)
+
+        if !(enemy1.is_rotating() || collisions.contains_key(&entity1)) {
+            collisions.insert(entity1, azimuth_to_quat_negative_z(90.));
+        }
+        if !(enemy2.is_rotating() || collisions.contains_key(&entity2)) {
+            collisions.insert(entity2, azimuth_to_quat_negative_z(90.));
+        }
+    }
+
+    for (transform, mut enemy, entity) in query.iter_mut() {
+        if !collisions.contains_key(&entity) {
+            continue
+        }
+
+        let quat = collisions.get(&entity).unwrap();
+        enemy.start_rotate(quat.clone());
     }
 }

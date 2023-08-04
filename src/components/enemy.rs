@@ -1,6 +1,8 @@
 use std::time::Duration;
 
-use bevy::prelude::*;
+use bevy::{prelude::*, ecs::query::ReadOnlyWorldQuery};
+
+use crate::geometry::{azimuth_to_quat_negative_z, get_closer_direction};
 
 pub enum MovementMode {
     Move,
@@ -23,8 +25,25 @@ impl Enemy {
         self.movement_mode = MovementMode::Move;
     }
 
-    pub fn start_rotate(&mut self, dest: Quat, direction: bool, is_angle_increases: Option<bool>) {
-        self.movement_mode = MovementMode::Rotate(dest, direction, is_angle_increases);
+    pub fn start_rotate(&mut self, dest: Quat) {
+        let self_quat =azimuth_to_quat_negative_z(self.azimuth);
+        let direction = get_closer_direction(self_quat, dest);
+        self.movement_mode = MovementMode::Rotate(dest, direction, None);
+    }
+
+    // TODO: mby instead of start_rotate and continue_rotate make
+    // MovementMode::StartRotate and MovementMode::ContinueRotate enums?
+    pub fn continue_rotate(&mut self, dest: Quat, is_angle_increases: bool) {
+        let self_quat = azimuth_to_quat_negative_z(self.azimuth);
+        let direction = get_closer_direction(self_quat, dest);
+        self.movement_mode = MovementMode::Rotate(dest, direction, Some(is_angle_increases));
+    }
+
+    pub fn is_rotating(&self) -> bool {
+        match self.movement_mode {
+            MovementMode::Rotate(_, _, _) => true,
+            _ => false,
+        }
     }
 }
 
