@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use bevy::{prelude::*, ecs::query::ReadOnlyWorldQuery};
+use bevy::prelude::*;
 
 use crate::geometry::{azimuth_to_quat_negative_z, get_closer_direction};
 
@@ -26,7 +26,7 @@ impl Enemy {
     }
 
     pub fn start_rotate(&mut self, dest: Quat) {
-        let self_quat =azimuth_to_quat_negative_z(self.azimuth);
+        let self_quat = azimuth_to_quat_negative_z(self.azimuth);
         let direction = get_closer_direction(self_quat, dest);
         self.movement_mode = MovementMode::Rotate(dest, direction, None);
     }

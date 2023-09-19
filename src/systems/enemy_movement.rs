@@ -1,5 +1,3 @@
-use std::borrow::BorrowMut;
-use std::collections::LinkedList;
 use std::f32::consts::{PI, FRAC_PI_2, TAU};
 
 use bevy::prelude::*;
@@ -9,7 +7,7 @@ use rand::Rng;
 
 use crate::constants;
 use crate::components::enemy::{Enemy, MovementMode};
-use crate::geometry::{azimuth_to_quat_negative_z, get_closer_direction};
+use crate::geometry::{azimuth_to_quat_negative_z, vec3_to_azimuth};
 
 // These are the same as player's. Maybe drag them to constant module?
 const HALF_ENEMY_SIZE: f32 = constants::TANK_DIMENSION / 2.;
@@ -97,7 +95,7 @@ pub fn collision_with_field_edges(
         } else if translation.y > y_max {
             translation.y = y_max;
             FRAC_PI_2
-        } else { 0. };// will bever happen
+        } else { 0. }; // will never happen
         transform.translation = translation;
 
         let target_quat = azimuth_to_quat_negative_z(rotation_angle_relative + rotation_angle_shift);
@@ -107,33 +105,40 @@ pub fn collision_with_field_edges(
 
 /// Rotates tanks if they collide with other tanks
 pub fn collision_with_tanks(
-    mut query: Query<(&Transform, &mut Enemy, Entity), With<Enemy>>,
+    mut query: Query<(&mut Transform, &mut Enemy, Entity), With<Enemy>>,
 ) {
-    let mut collisions: HashMap<Entity, Quat> = HashMap::new();
+    let mut collisions: HashMap<Entity, Vec3> = HashMap::new(); // tank entity + new direction
     for [(transform1, enemy1, entity1), (transform2, enemy2, entity2)] in query.iter_combinations() {
         if transform1.translation.distance(transform2.translation) > constants::TANK_DIMENSION {
             continue
         }
 
-
-        // TODO: randomize rotation angles for both tanks
-        // let vec_between = transform1.translation - transform2.translation;
-        // transform1.rotate(rotation)
-
         if !(enemy1.is_rotating() || collisions.contains_key(&entity1)) {
-            collisions.insert(entity1, azimuth_to_quat_negative_z(90.));
+            let diff = transform1.translation - transform2.translation;
+            collisions.insert(entity1, diff);
         }
         if !(enemy2.is_rotating() || collisions.contains_key(&entity2)) {
-            collisions.insert(entity2, azimuth_to_quat_negative_z(90.));
+            let diff = transform2.translation - transform1.translation;
+            collisions.insert(entity2, diff);
         }
     }
 
-    for (transform, mut enemy, entity) in query.iter_mut() {
+    let mut rng = rand::thread_rng();
+    for (mut transform, mut enemy, entity) in query.iter_mut() {
         if !collisions.contains_key(&entity) {
             continue
         }
 
-        let quat = collisions.get(&entity).unwrap();
-        enemy.start_rotate(quat.clone());
+        let diff = collisions.get(&entity).unwrap();
+        let rnd_angle_to_rotate = rng.gen_range((0. as f32)..(PI as f32)) - FRAC_PI_2;
+        let new_azimuth = vec3_to_azimuth(*diff) + rnd_angle_to_rotate;
+
+        // Push the tank back to avoid collision detection on the next iteration
+        let diff_norm = diff.normalize() * 10.;
+        transform.translation.x += diff_norm.x;
+        transform.translation.y += diff_norm.y;
+
+        enemy.start_rotate(azimuth_to_quat_negative_z(new_azimuth));
+
     }
 }
