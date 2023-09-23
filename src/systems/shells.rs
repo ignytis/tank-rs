@@ -1,11 +1,12 @@
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 
+use crate::components::animation::{AnimationTimer, AnimationData};
 use crate::components::enemy::Enemy;
 use crate::components::player::Player;
 use crate::components::shell::{PlayerShell, EnemyShell};
 
-use crate::constants::Z_INDEX_SHELL;
+use crate::constants::{Z_INDEX_SHELL, self};
 
 
 const SHELL_SPEED: f32 = 10.;
@@ -29,7 +30,7 @@ pub fn enemy_shoot(
         commands.spawn((
             SpriteBundle {
                 transform: Transform::from_xyz(transl.x, transl.y, Z_INDEX_SHELL)
-                    .with_rotation(Quat::from_axis_angle(Vec3::NEG_Z, enemy.azimuth)), // randomize direction
+                    .with_rotation(Quat::from_axis_angle(Vec3::NEG_Z, enemy.azimuth)),
                 texture: asset_server.load("sprites/shell.png"),
                 ..default()
             },
@@ -65,7 +66,7 @@ pub fn player_shoot(
     commands.spawn((
         SpriteBundle {
             transform: Transform::from_xyz(transl.x, transl.y, Z_INDEX_SHELL)
-                .with_rotation(Quat::from_axis_angle(Vec3::NEG_Z, azimuth)), // randomize direction
+                .with_rotation(Quat::from_axis_angle(Vec3::NEG_Z, azimuth)),
             texture: asset_server.load("sprites/shell.png"),
             ..default()
         },
@@ -121,8 +122,36 @@ pub fn shell_offscreen_despawn(
     }
 }
 
+fn spawn_tank_explosion(
+    commands: &mut Commands,
+    asset_server: &Res<AssetServer>,
+    texture_atlases: &mut ResMut<Assets<TextureAtlas>>,
+    tank_transform: Transform,
+) {
+    let texture_handle = asset_server.load("sprites/animations/tank_explosion.png");
+    let texture_atlas =
+        TextureAtlas::from_grid(texture_handle, Vec2::new(constants::TANK_DIMENSION*2., constants::TANK_DIMENSION*2.), 9, 1, None, None);
+    let texture_atlas_handle = texture_atlases.add(texture_atlas);
+    let animation_data = AnimationData { first: 1, last: 8, delete_after_last_frame: true };
+
+    let mut transform = tank_transform;
+    transform.translation.z = constants::Z_INDEX_TANK_EXPLOSION;
+    commands.spawn((
+        SpriteSheetBundle {
+            texture_atlas: texture_atlas_handle,
+            sprite: TextureAtlasSprite::new(animation_data.first),
+            transform,
+            ..default()
+        },
+        animation_data,
+        AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
+    ));
+}
+
 pub fn tank_hit(
     mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
     mut player_shell_query: Query<(Entity, &Transform), With<PlayerShell>>,
     mut enemy_shell_query: Query<(Entity, &Transform), With<EnemyShell>>,
     mut player_query: Query<(Entity, &Transform), With<Player>>,
@@ -133,6 +162,8 @@ pub fn tank_hit(
             if player_shell_transform.translation.distance(enemy_transform.translation) > 40. {
                 continue
             }
+
+            spawn_tank_explosion(&mut commands, &asset_server, &mut texture_atlases, *enemy_transform);
             commands.entity(player_shell_entity).despawn();
             commands.entity(enemy_entity).despawn();
         }
@@ -143,6 +174,8 @@ pub fn tank_hit(
             if enemy_shell_transform.translation.distance(player_transform.translation) > 40. {
                 continue
             }
+
+            spawn_tank_explosion(&mut commands, &asset_server, &mut texture_atlases, *player_transform);
             commands.entity(enemy_shell_entity).despawn();
             commands.entity(player_entity).despawn();
         }

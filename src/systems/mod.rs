@@ -1,3 +1,4 @@
+pub mod animation;
 pub mod player_movement;
 pub mod enemy_movement;
 pub mod simulation_state;

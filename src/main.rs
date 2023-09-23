@@ -8,6 +8,7 @@ use bevy::prelude::*;
 
 use crate::constants::{WINDOW_WIDTH, WINDOW_HEIGHT};
 
+use crate::systems::animation as systems_animation;
 use crate::systems::enemy_movement as systems_enemy_movement;
 use crate::systems::player_movement as systems_player_movement;
 use crate::systems::setup as systems_setup;
@@ -38,6 +39,7 @@ fn main(){
         // systems_setup::add_walls, // TODO: implement collisions and uncomment
     ))
     .add_systems(Update, (
+        systems_animation::animate_sprite,
         systems_spawn::spawn_enemy,
         systems_spawn::spawn_player,
         systems_player_movement::move_player,
