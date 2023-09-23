@@ -5,6 +5,9 @@ use crate::components::spawn_enemy::SpawnEnemy;
 // use crate::components::wall_unbreakable::WallUnbreakable;  // TODO: implement walls
 use crate::constants;
 
+const FLOOR_TEXTURE_HEIGHT: f32 = 300.;
+const FLOOR_TEXTURE_WIDTH: f32 = 300.;
+
 pub fn setup_window(
     mut commands: Commands,
 ) {
@@ -25,6 +28,7 @@ pub fn add_player_spawn(
     ));
 }
 
+/// Creates enemy spawns
 pub fn add_enemy_spawn(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
@@ -43,6 +47,28 @@ pub fn add_enemy_spawn(
 
 }
 
+/// Adds a floor texture
+pub fn add_floor(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+) {
+    let asset = asset_server.load("sprites/floor.png");
+    let repeat_assets_x = (constants::WINDOW_WIDTH / FLOOR_TEXTURE_WIDTH).ceil() as u32;
+    let repeat_assets_y = (constants::WINDOW_HEIGHT / FLOOR_TEXTURE_HEIGHT).ceil() as u32;
+
+    for x in 0..repeat_assets_x + 1 {
+        for y in 0..repeat_assets_y + 1 {
+            commands.spawn((
+                SpriteBundle {
+                    transform: Transform::from_xyz( constants::WINDOW_WIDTH / -2. + FLOOR_TEXTURE_WIDTH * x as f32,
+                        constants::WINDOW_HEIGHT / -2. + FLOOR_TEXTURE_HEIGHT * y as f32, constants::Z_INDEX_GROUND),
+                    texture: asset.clone(),
+                    ..default()
+                },
+            ));
+        }
+    }
+}
 // pub fn add_walls(
 //     mut commands: Commands,
 //     asset_server: Res<AssetServer>,

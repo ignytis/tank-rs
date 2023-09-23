@@ -34,6 +34,7 @@ fn main(){
         systems_setup::setup_window,
         systems_setup::add_player_spawn,
         systems_setup::add_enemy_spawn,
+        systems_setup::add_floor,
         // systems_setup::add_walls, // TODO: implement collisions and uncomment
     ))
     .add_systems(Update, (
