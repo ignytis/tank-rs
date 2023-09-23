@@ -7,6 +7,7 @@ use rand::Rng;
 
 use crate::constants;
 use crate::components::enemy::{Enemy, MovementMode};
+// use crate::components::wall_unbreakable::WallUnbreakable; // TODO: implement walls
 use crate::geometry::{azimuth_to_quat_negative_z, vec3_to_azimuth};
 
 // These are the same as player's. Maybe drag them to constant module?
@@ -134,7 +135,8 @@ pub fn collision_with_tanks(
         let new_azimuth = vec3_to_azimuth(*diff) + rnd_angle_to_rotate;
 
         // Push the tank back to avoid collision detection on the next iteration
-        let diff_norm = diff.normalize() * 10.;
+        // Causes tanks to "teleport" on a small range. Maybe better to replace this logic with something else
+        let diff_norm = diff.normalize() * 5.;
         transform.translation.x += diff_norm.x;
         transform.translation.y += diff_norm.y;
 
@@ -142,3 +144,12 @@ pub fn collision_with_tanks(
 
     }
 }
+
+// Rotates tanks if they collide with unbreakable walls
+// TODO: implement the logic and add walls in setup system
+// pub fn collision_with_unbreakable_walls(
+//     mut _query_enemies: Query<(&mut Transform, &mut Enemy, Entity), With<Enemy>>,
+//     mut _query_walls: Query<(&mut Transform, &mut WallUnbreakable, Entity), With<WallUnbreakable>>,
+// ) {
+    
+// }
