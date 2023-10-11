@@ -1,5 +1,7 @@
 pub mod animation;
 
+pub mod hud;
+
 pub mod enemy;
 pub mod player;
 

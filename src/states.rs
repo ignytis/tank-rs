@@ -6,3 +6,10 @@ pub enum SimulationState {
     Running,
     Paused,
 }
+
+#[derive(States, Debug, PartialEq, Eq, Hash, Clone, Default)]
+pub enum GameState {
+    #[default]
+    InGame,
+    GameOver,
+}

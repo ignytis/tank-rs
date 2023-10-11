@@ -3,11 +3,14 @@ use bevy::window::PrimaryWindow;
 
 use crate::components::animation::{AnimationTimer, AnimationData};
 use crate::components::enemy::Enemy;
+use crate::components::hud::PlayerLives;
 use crate::components::player::Player;
 use crate::components::shell::{PlayerShell, EnemyShell};
 
-use crate::constants::{Z_INDEX_SHELL, self};
+use crate::constants;
 
+use crate::resources::lives::Lives;
+use crate::states::GameState;
 
 const SHELL_SPEED: f32 = 10.;
 
@@ -29,7 +32,7 @@ pub fn enemy_shoot(
         let shell = EnemyShell::new(enemy.azimuth);
         commands.spawn((
             SpriteBundle {
-                transform: Transform::from_xyz(transl.x, transl.y, Z_INDEX_SHELL)
+                transform: Transform::from_xyz(transl.x, transl.y, constants::Z_INDEX_SHELL)
                     .with_rotation(Quat::from_axis_angle(Vec3::NEG_Z, enemy.azimuth)),
                 texture: asset_server.load("sprites/shell.png"),
                 ..default()
@@ -65,7 +68,7 @@ pub fn player_shoot(
     let transl = player_transform.translation;
     commands.spawn((
         SpriteBundle {
-            transform: Transform::from_xyz(transl.x, transl.y, Z_INDEX_SHELL)
+            transform: Transform::from_xyz(transl.x, transl.y, constants::Z_INDEX_SHELL)
                 .with_rotation(Quat::from_axis_angle(Vec3::NEG_Z, azimuth)),
             texture: asset_server.load("sprites/shell.png"),
             ..default()
@@ -122,6 +125,7 @@ pub fn shell_offscreen_despawn(
     }
 }
 
+/// Spawns a tank explosion animation. NB: NOT a system
 fn spawn_tank_explosion(
     commands: &mut Commands,
     asset_server: &Res<AssetServer>,
@@ -148,13 +152,45 @@ fn spawn_tank_explosion(
     ));
 }
 
-pub fn tank_hit(
+/// Player's tank hits by enemy shells
+pub fn tank_hit_player(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+    mut enemy_shell_query: Query<(Entity, &Transform), With<EnemyShell>>,
+    mut player_query: Query<(Entity, &Transform), With<Player>>,
+    mut lives: ResMut<Lives>,
+    mut hud_hits_query: Query<&mut Text, With<PlayerLives>>,
+) {
+    for (enemy_shell_entity, enemy_shell_transform) in enemy_shell_query.iter_mut() {    
+        for (player_entity, player_transform) in player_query.iter_mut() {
+            if enemy_shell_transform.translation.distance(player_transform.translation) > 40. {
+                continue
+            }
+
+            spawn_tank_explosion(&mut commands, &asset_server, &mut texture_atlases, *player_transform);
+            commands.entity(enemy_shell_entity).despawn();
+            commands.entity(player_entity).despawn();
+
+            // No tanks lefs
+            if 0 == lives.player_lives {
+                commands.insert_resource(NextState(Some(GameState::GameOver)));
+                return
+            }
+
+            lives.player_lives -= 1;
+            let mut text = hud_hits_query.single_mut();
+            text.sections[0].value = format!("Player's lives: {}", lives.player_lives);
+        }
+    }
+}
+
+/// Enemy tank hits by player shells
+pub fn tank_hit_enemy(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
     mut player_shell_query: Query<(Entity, &Transform), With<PlayerShell>>,
-    mut enemy_shell_query: Query<(Entity, &Transform), With<EnemyShell>>,
-    mut player_query: Query<(Entity, &Transform), With<Player>>,
     mut enemy_query: Query<(Entity, &Transform), With<Enemy>>,
 ) {
     for (player_shell_entity, player_shell_transform) in player_shell_query.iter_mut() {    
@@ -166,18 +202,6 @@ pub fn tank_hit(
             spawn_tank_explosion(&mut commands, &asset_server, &mut texture_atlases, *enemy_transform);
             commands.entity(player_shell_entity).despawn();
             commands.entity(enemy_entity).despawn();
-        }
-    }
-
-    for (enemy_shell_entity, enemy_shell_transform) in enemy_shell_query.iter_mut() {    
-        for (player_entity, player_transform) in player_query.iter_mut() {
-            if enemy_shell_transform.translation.distance(player_transform.translation) > 40. {
-                continue
-            }
-
-            spawn_tank_explosion(&mut commands, &asset_server, &mut texture_atlases, *player_transform);
-            commands.entity(enemy_shell_entity).despawn();
-            commands.entity(player_entity).despawn();
         }
     }
 }

@@ -1,9 +1,13 @@
 use bevy::prelude::*;
 
+use crate::components::hud::PlayerLives;
+
 use crate::components::spawn_player::SpawnPlayer;
 use crate::components::spawn_enemy::SpawnEnemy;
 // use crate::components::wall_unbreakable::WallUnbreakable;  // TODO: implement walls
 use crate::constants;
+
+use crate::resources::lives::Lives;
 
 const FLOOR_TEXTURE_HEIGHT: f32 = 300.;
 const FLOOR_TEXTURE_WIDTH: f32 = 300.;
@@ -68,6 +72,34 @@ pub fn add_floor(
             ));
         }
     }
+}
+
+pub fn add_hud(
+    asset_server: Res<AssetServer>,
+    mut commands: Commands,
+    lives: Res<Lives>,
+) {
+    commands.spawn((
+        // Create a TextBundle that has a Text with a single section.
+        TextBundle::from_section(
+            // Accepts a `String` or any type that converts into a `String`, such as `&str`
+            format!("Player's lives: {}", lives.player_lives),
+            TextStyle {
+                font: asset_server.load("fonts/hobby-of-night.ttf"),
+                font_size: 100.0,
+                color: Color::WHITE,
+            },
+        ) // Set the alignment of the Text
+        .with_text_alignment(TextAlignment::Center)
+        // Set the style of the TextBundle itself.
+        .with_style(Style {
+            position_type: PositionType::Absolute,
+            bottom: Val::Px(5.0),
+            right: Val::Px(5.0),
+            ..default()
+        }),
+        PlayerLives::default(),
+    ));
 }
 // pub fn add_walls(
 //     mut commands: Commands,
