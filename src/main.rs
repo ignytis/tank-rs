@@ -70,6 +70,12 @@ fn main(){
     .add_systems(OnEnter(GameState::GameOver), (
         systems_status_labels::spawn_game_over_label,
     ))
+    .add_systems(OnEnter(SimulationState::Paused), (
+        systems_status_labels::spawn_paused_label,
+    ))
+    .add_systems(OnEnter(SimulationState::Running), (
+        systems_status_labels::despawn_status_label,
+    ))
     .insert_resource(Lives::default())
     .add_state::<GameState>()
     .add_state::<SimulationState>()
