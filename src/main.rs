@@ -59,12 +59,10 @@ fn main(){
     ).run_if(in_state(SimulationState::Running)))
     .add_systems(Update, (
         systems_player_movement::confine_player_movement,
-        systems_spawn::spawn_player,
-        systems_shells::tank_hit_player,
-    ).run_if(in_state(GameState::InGame)))
-    .add_systems(Update, (
         systems_player_movement::move_player,
         systems_shells::player_shoot,
+        systems_shells::tank_hit_player,
+        systems_spawn::spawn_player,
     ).run_if(in_state(GameState::InGame)
         .and_then(in_state(SimulationState::Running))))
     .add_systems(OnEnter(GameState::GameOver), (
