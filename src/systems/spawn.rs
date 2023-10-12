@@ -3,20 +3,24 @@ use std::f64::consts::TAU;
 use bevy::prelude::*;
 use rand::Rng;
 
+use crate::components::hud::{PlayerLives, EnemyLives};
 use crate::components::player::Player;
 use crate::components::enemy::Enemy;
 use crate::components::spawn_enemy::SpawnEnemy;
 use crate::components::spawn_player::SpawnPlayer;
 
 use crate::constants::{MAX_ENEMIES, Z_INDEX_TANK};
+use crate::resources::lives::Lives;
 
 /// Spawns player tank on spawn
 pub fn spawn_player(
-    mut commands: Commands,
     asset_server: Res<AssetServer>,
+    mut commands: Commands,
+    time: Res<Time>,
+    mut hud_hits_query: Query<&mut Text, With<PlayerLives>>,
+    mut lives: ResMut<Lives>,
     mut player_spawn_query: Query<(&mut SpawnPlayer, &Transform), With<SpawnPlayer>>,
     player_query: Query<&Player>,
-    time: Res<Time>
 ) {
     if !player_query.is_empty() { // if player is already spawned
         return;
@@ -41,6 +45,10 @@ pub fn spawn_player(
         player,
     ));
     player_spawn.timer.reset();
+
+    lives.player_lives -= 1;
+    let mut text = hud_hits_query.single_mut();
+    text.sections[0].value = format!("Player's lives: {}", lives.player_lives);
 }
 
 /// Spawns enemy tanks on spawn
@@ -49,7 +57,9 @@ pub fn spawn_enemy(
     asset_server: Res<AssetServer>,
     mut enemy_spawn_query: Query<(&mut SpawnEnemy, &Transform), With<SpawnEnemy>>,
     enemy_query: Query<&Enemy>,
-    time: Res<Time>
+    mut hud_hits_query: Query<&mut Text, With<EnemyLives>>,
+    mut lives: ResMut<Lives>,
+    time: Res<Time>,
 ) {
     let mut num_enemies = enemy_query.iter().len();
     if num_enemies >= MAX_ENEMIES { // all enemies are already spawned
@@ -59,7 +69,7 @@ pub fn spawn_enemy(
     let mut rng = rand::thread_rng();
     
     for (mut enemy_spawn, enemy_spawn_transform) in enemy_spawn_query.iter_mut() {
-        if num_enemies >= MAX_ENEMIES {
+        if num_enemies >= MAX_ENEMIES || 0 == lives.enemy_lives {
             return
         }
 
@@ -81,6 +91,9 @@ pub fn spawn_enemy(
             enemy,
         ));
         num_enemies += 1;
+        lives.enemy_lives -= 1;
+        let mut text = hud_hits_query.single_mut();
+        text.sections[0].value = format!("Enemy lives: {}", lives.enemy_lives);
         enemy_spawn.timer.reset();
     }
 }

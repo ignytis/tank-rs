@@ -12,4 +12,5 @@ pub enum GameState {
     #[default]
     InGame,
     GameOver,
+    PlayerWon,
 }

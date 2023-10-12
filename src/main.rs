@@ -11,6 +11,7 @@ use crate::constants::{WINDOW_WIDTH, WINDOW_HEIGHT};
 
 use crate::systems::animation as systems_animation;
 use crate::systems::enemy_movement as systems_enemy_movement;
+use crate::systems::game_status as systems_game_status;
 use crate::systems::player_movement as systems_player_movement;
 use crate::systems::setup as systems_setup;
 use crate::systems::shells as systems_shells;
@@ -63,10 +64,14 @@ fn main(){
         systems_shells::player_shoot,
         systems_shells::tank_hit_player,
         systems_spawn::spawn_player,
+        systems_game_status::check_tanks,
     ).run_if(in_state(GameState::InGame)
         .and_then(in_state(SimulationState::Running))))
     .add_systems(OnEnter(GameState::GameOver), (
         systems_status_labels::spawn_game_over_label,
+    ))
+    .add_systems(OnEnter(GameState::PlayerWon), (
+        systems_status_labels::spawn_player_won_label,
     ))
     .add_systems(OnEnter(SimulationState::Paused), (
         systems_status_labels::spawn_paused_label,

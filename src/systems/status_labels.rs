@@ -2,6 +2,13 @@ use bevy::prelude::*;
 
 use crate::components::hud::StatusLabel;
 
+pub fn spawn_player_won_label(
+    asset_server: Res<AssetServer>,
+    commands: Commands,
+) {
+    spawn_status_label(asset_server, commands, format!("You won!"));
+}
+
 pub fn spawn_game_over_label(
     asset_server: Res<AssetServer>,
     commands: Commands,

@@ -14,5 +14,5 @@ pub const Z_INDEX_TANK_EXPLOSION: f32 = 70.0;
 
 pub const MAX_ENEMIES: usize = 20;
 
-pub const LIVES_ENEMY: u8 = 30;
+pub const LIVES_ENEMY: u8 = 10;
 pub const LIVES_PLAYER: u8 = 5;

@@ -3,14 +3,10 @@ use bevy::window::PrimaryWindow;
 
 use crate::components::animation::{AnimationTimer, AnimationData};
 use crate::components::enemy::Enemy;
-use crate::components::hud::PlayerLives;
 use crate::components::player::Player;
 use crate::components::shell::{PlayerShell, EnemyShell};
 
 use crate::constants;
-
-use crate::resources::lives::Lives;
-use crate::states::GameState;
 
 const SHELL_SPEED: f32 = 10.;
 
@@ -159,8 +155,6 @@ pub fn tank_hit_player(
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
     mut enemy_shell_query: Query<(Entity, &Transform), With<EnemyShell>>,
     mut player_query: Query<(Entity, &Transform), With<Player>>,
-    mut lives: ResMut<Lives>,
-    mut hud_hits_query: Query<&mut Text, With<PlayerLives>>,
 ) {
     for (enemy_shell_entity, enemy_shell_transform) in enemy_shell_query.iter_mut() {    
         for (player_entity, player_transform) in player_query.iter_mut() {
@@ -171,16 +165,6 @@ pub fn tank_hit_player(
             spawn_tank_explosion(&mut commands, &asset_server, &mut texture_atlases, *player_transform);
             commands.entity(enemy_shell_entity).despawn();
             commands.entity(player_entity).despawn();
-
-            // No tanks lefs
-            if 0 == lives.player_lives {
-                commands.insert_resource(NextState(Some(GameState::GameOver)));
-                return
-            }
-
-            lives.player_lives -= 1;
-            let mut text = hud_hits_query.single_mut();
-            text.sections[0].value = format!("Player's lives: {}", lives.player_lives);
         }
     }
 }
@@ -190,8 +174,8 @@ pub fn tank_hit_enemy(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
-    mut player_shell_query: Query<(Entity, &Transform), With<PlayerShell>>,
     mut enemy_query: Query<(Entity, &Transform), With<Enemy>>,
+    mut player_shell_query: Query<(Entity, &Transform), With<PlayerShell>>,
 ) {
     for (player_shell_entity, player_shell_transform) in player_shell_query.iter_mut() {    
         for (enemy_entity, enemy_transform) in enemy_query.iter_mut() {

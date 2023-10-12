@@ -1,6 +1,7 @@
 pub mod animation;
 pub mod player_movement;
 pub mod enemy_movement;
+pub mod game_status;
 pub mod simulation_state;
 pub mod shells;
 pub mod setup;
