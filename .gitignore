@@ -1,4 +1,8 @@
 /target
 
+# IDEs
 /.vscode
 /.idea
+
+# We are not storing assets in Git. Check the releases section to download assets
+/assets
