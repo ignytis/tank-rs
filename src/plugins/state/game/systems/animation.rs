@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::components::animation::{AnimationData, AnimationTimer};
+use crate::plugins::state::game::components::animation::{AnimationData, AnimationTimer};
 
 pub fn animate_sprite(
     mut commands: Commands,

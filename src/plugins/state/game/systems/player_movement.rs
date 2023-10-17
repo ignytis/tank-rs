@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 
-use crate::components::player::Player;
+use crate::plugins::state::game::components::player::Player;
 use crate::constants;
 use crate::geometry::azimuth_to_quat_negative_z;
 

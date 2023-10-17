@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::components::hud::StatusLabel;
+use crate::plugins::state::game::components::hud::StatusLabel;
 
 pub fn spawn_player_won_label(
     asset_server: Res<AssetServer>,

@@ -3,14 +3,14 @@ use std::f64::consts::TAU;
 use bevy::prelude::*;
 use rand::Rng;
 
-use crate::components::hud::{PlayerLives, EnemyLives};
-use crate::components::player::Player;
-use crate::components::enemy::Enemy;
-use crate::components::spawn_enemy::SpawnEnemy;
-use crate::components::spawn_player::SpawnPlayer;
+use crate::plugins::state::game::components::hud::{PlayerLives, EnemyLives};
+use crate::plugins::state::game::components::player::Player;
+use crate::plugins::state::game::components::enemy::Enemy;
+use crate::plugins::state::game::components::spawn_enemy::SpawnEnemy;
+use crate::plugins::state::game::components::spawn_player::SpawnPlayer;
 
 use crate::constants::{MAX_ENEMIES, Z_INDEX_TANK};
-use crate::resources::lives::Lives;
+use crate::plugins::state::game::resources::lives::Lives;
 
 /// Spawns player tank on spawn
 pub fn spawn_player(

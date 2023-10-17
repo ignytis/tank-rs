@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::states::SimulationState;
+use crate::plugins::state::game::states::SimulationState;
 
 pub fn pause_and_resume_game(
     mut commands: Commands,

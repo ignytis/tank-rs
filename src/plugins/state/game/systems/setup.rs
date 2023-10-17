@@ -1,13 +1,13 @@
 use bevy::prelude::*;
 
-use crate::components::hud::{EnemyLives, PlayerLives};
+use crate::plugins::state::game::components::hud::{EnemyLives, PlayerLives};
 
-use crate::components::spawn_player::SpawnPlayer;
-use crate::components::spawn_enemy::SpawnEnemy;
-// use crate::components::wall_unbreakable::WallUnbreakable;  // TODO: implement walls
+use crate::plugins::state::game::components::spawn_player::SpawnPlayer;
+use crate::plugins::state::game::components::spawn_enemy::SpawnEnemy;
+// use crate::plugins::state::game::components::wall_unbreakable::WallUnbreakable;  // TODO: implement walls
 use crate::constants;
 
-use crate::resources::lives::Lives;
+use crate::plugins::state::game::resources::lives::Lives;
 
 const FLOOR_TEXTURE_HEIGHT: f32 = 300.;
 const FLOOR_TEXTURE_WIDTH: f32 = 300.;

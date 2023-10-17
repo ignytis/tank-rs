@@ -6,8 +6,8 @@ use bevy::window::PrimaryWindow;
 use rand::Rng;
 
 use crate::constants;
-use crate::components::enemy::{Enemy, MovementMode};
-// use crate::components::wall_unbreakable::WallUnbreakable; // TODO: implement walls
+use crate::plugins::state::game::components::enemy::{Enemy, MovementMode};
+// use crate::plugins::state::game::components::wall_unbreakable::WallUnbreakable; // TODO: implement walls
 use crate::geometry::{azimuth_to_quat_negative_z, vec3_to_azimuth};
 
 // These are the same as player's. Maybe drag them to constant module?

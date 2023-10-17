@@ -1,10 +1,10 @@
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
 
-use crate::components::animation::{AnimationTimer, AnimationData};
-use crate::components::enemy::Enemy;
-use crate::components::player::Player;
-use crate::components::shell::{PlayerShell, EnemyShell};
+use crate::plugins::state::game::components::animation::{AnimationTimer, AnimationData};
+use crate::plugins::state::game::components::enemy::Enemy;
+use crate::plugins::state::game::components::player::Player;
+use crate::plugins::state::game::components::shell::{PlayerShell, EnemyShell};
 
 use crate::constants;
 

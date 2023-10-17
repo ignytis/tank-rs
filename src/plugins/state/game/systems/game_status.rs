@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 
-use crate::{resources::lives::Lives, components::{player::Player, enemy::Enemy}, states::GameState};
+use crate::plugins::state::game::components::{player::Player, enemy::Enemy};
+use crate::plugins::state::game::resources::lives::Lives;
+use crate::plugins::state::game::states::GameState;
+
 
 /// Ends the game if no tanks left on any side
 pub fn check_tanks(
