@@ -1,6 +1,8 @@
 mod constants;
 mod geometry;
 mod plugins;
+mod states;
+mod systems_global;
 
 use bevy::prelude::*;
 
@@ -20,6 +22,7 @@ fn main(){
         }),
         GamePlugin,
     ))
-
+    .add_state::<states::SceneState>()
+    .add_systems(Startup, systems_global::setup_window)
     .run();
 }
