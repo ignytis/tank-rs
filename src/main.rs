@@ -7,6 +7,7 @@ mod systems_global;
 use bevy::prelude::*;
 
 use crate::plugins::state::game::GamePlugin;
+use crate::plugins::state::menu::MenuPlugin;
 
 fn main(){
   App::new()
@@ -21,6 +22,7 @@ fn main(){
             ..default()
         }),
         GamePlugin,
+        MenuPlugin,
     ))
     .add_state::<states::SceneState>()
     .add_systems(Startup, systems_global::setup_window)

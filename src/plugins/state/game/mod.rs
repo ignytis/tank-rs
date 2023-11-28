@@ -26,7 +26,6 @@ pub struct GamePlugin;
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(SceneState::InGame), (
-            systems_setup::setup_window,
             systems_setup::add_player_spawn,
             systems_setup::add_enemy_spawn,
             systems_setup::add_floor,

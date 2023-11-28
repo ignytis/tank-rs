@@ -12,12 +12,6 @@ use crate::plugins::state::game::resources::lives::Lives;
 const FLOOR_TEXTURE_HEIGHT: f32 = 300.;
 const FLOOR_TEXTURE_WIDTH: f32 = 300.;
 
-pub fn setup_window(
-    mut commands: Commands,
-) {
-    commands.spawn(Camera2dBundle::default());
-}
-
 pub fn add_player_spawn(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
