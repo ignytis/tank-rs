@@ -1,3 +1,5 @@
+pub const FRAMERATE_MAX: f64 = 90.;
+
 pub const WINDOW_WIDTH: f32 = 1920.;
 pub const WINDOW_HEIGHT: f32 = 1080.;
 
