@@ -7,6 +7,6 @@ pub fn shutdown(
     node_bundle_query: Query<Entity, With<components::MenuItem>>,
 ) {
     for entity in node_bundle_query.iter() {
-        commands.entity(entity).despawn();
+        commands.entity(entity).despawn_recursive();
     }
 }

@@ -23,14 +23,13 @@ pub fn spawn_paused_label(
     spawn_status_label(asset_server, commands, format!("Paused"));
 }
 
-/// Player's tank hits by enemy shells
+/// Despawns the status (e.g. "paused" label)
 pub fn despawn_status_label(
     mut commands: Commands,
     query: Query<Entity, With<StatusLabel>>,
 ) {
-    match query.get_single() {
-        Ok(entity) => commands.entity(entity).despawn(),
-        _ => {},
+    for e in query.iter() {
+        commands.entity(e).despawn_recursive();
     }
 }
 
@@ -50,7 +49,7 @@ fn spawn_status_label(
                 },
                 ..default()
             },
-            StatusLabel{}))
+            StatusLabel::default()))
         .with_children(|parent| {
             parent
                 .spawn(NodeBundle {
@@ -64,7 +63,7 @@ fn spawn_status_label(
                     ..default()
                 })
                 .with_children(|parent| {
-                    parent.spawn((
+                    parent.spawn(
                         TextBundle::from_section(
                             label,
                             TextStyle {
@@ -72,9 +71,8 @@ fn spawn_status_label(
                                 font_size: 200.0,
                                 color: Color::RED,  
                             },
-                        ),
-                        Label,
-                    ));
+                        )
+                    );
                 });
         });
 }
