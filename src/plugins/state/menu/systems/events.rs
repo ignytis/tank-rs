@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+use crate::plugins::state::menu::components::{MenuItem, MenuItemType};
 use crate::plugins::state::menu::constants;
 use crate::states::SceneState;
 
@@ -9,26 +10,29 @@ pub fn button_events(
         (
             &Interaction,
             &mut BackgroundColor,
-            &mut BorderColor
+            &mut BorderColor,
+            &MenuItem
         ),
-        (Changed<Interaction>, With<Button>),
-    >
+        (Changed<Interaction>, With<MenuItem>),
+    >,
+    mut app_exit_events: ResMut<Events<bevy::app::AppExit>>
 ) {
-    for (interaction, mut color, mut border_color) in &mut interaction_query {
+    for (interaction, mut color, mut border_color,menu_item) in &mut interaction_query {
         match *interaction {
             Interaction::Pressed => {
-                // text.sections[0].value = "Press".to_string();
                 *color = constants::COLOR_BUTTON_PRESSED.into();
                 border_color.0 = Color::RED;
-                commands.insert_resource(NextState(Some(SceneState::InGame)));
+                match menu_item.item_type {
+                    MenuItemType::NewGame => commands.insert_resource(NextState(Some(SceneState::InGame))),
+                    MenuItemType::LevelEditor => {},
+                    MenuItemType::Exit => app_exit_events.send(bevy::app::AppExit),
+                };
             }
             Interaction::Hovered => {
-                // text.sections[0].value = "Hover".to_string();
                 *color = constants::COLOR_BUTTON_HOVERED.into();
                 border_color.0 = Color::WHITE;
             }
             Interaction::None => {
-                // text.sections[0].value = "Button".to_string();
                 *color = constants::COLOR_BUTTON.into();
                 border_color.0 = Color::BLACK;
             }
