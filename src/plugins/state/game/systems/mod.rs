@@ -5,5 +5,6 @@ pub mod game_status;
 pub mod simulation_state;
 pub mod shells;
 pub mod setup;
+pub mod shutdown;
 pub mod spawn;
 pub mod status_labels;

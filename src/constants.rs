@@ -14,7 +14,7 @@ pub const Z_INDEX_TANK: f32 = 50.0;
 pub const Z_INDEX_TANK_EXPLOSION: f32 = 70.0;
 // pub const Z_INDEX_WALL: f32 = 200.0;  // TODO: uncomment when walls are implemented
 
-pub const MAX_ENEMIES: usize = 20;
+pub const MAX_ENEMIES: usize = 5;
 
 pub const LIVES_ENEMY: u8 = 10;
 pub const LIVES_PLAYER: u8 = 5;

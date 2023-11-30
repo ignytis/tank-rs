@@ -10,4 +10,5 @@ pub mod shell;
 pub mod spawn_enemy;
 pub mod spawn_player;
 
+pub mod map;
 pub mod wall_unbreakable;

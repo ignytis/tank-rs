@@ -5,6 +5,7 @@ use crate::plugins::state::game::components::hud::{EnemyLives, PlayerLives};
 use crate::plugins::state::game::components::spawn_player::SpawnPlayer;
 use crate::plugins::state::game::components::spawn_enemy::SpawnEnemy;
 // use crate::plugins::state::game::components::wall_unbreakable::WallUnbreakable;  // TODO: implement walls
+use crate::plugins::state::game::components::map::Ground;
 use crate::constants;
 
 use crate::plugins::state::game::resources::lives::Lives;
@@ -45,12 +46,12 @@ pub fn add_enemy_spawn(
 
 }
 
-/// Adds a floor texture
-pub fn add_floor(
+/// Adds a ground texture
+pub fn add_ground(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
 ) {
-    let asset = asset_server.load("sprites/floor.png");
+    let asset = asset_server.load("sprites/ground.png");
     let repeat_assets_x = (constants::WINDOW_WIDTH / FLOOR_TEXTURE_WIDTH).ceil() as u32;
     let repeat_assets_y = (constants::WINDOW_HEIGHT / FLOOR_TEXTURE_HEIGHT).ceil() as u32;
 
@@ -63,6 +64,7 @@ pub fn add_floor(
                     texture: asset.clone(),
                     ..default()
                 },
+                Ground::default(),
             ));
         }
     }
@@ -72,27 +74,28 @@ pub fn add_hud(
     asset_server: Res<AssetServer>,
     mut commands: Commands,
     lives: Res<Lives>,
-) {    commands.spawn((
-    // Create a TextBundle that has a Text with a single section.
-    TextBundle::from_section(
-        // Accepts a `String` or any type that converts into a `String`, such as `&str`
-        format!("Enemy lives: {}", lives.enemy_lives),
-        TextStyle {
-            font: asset_server.load("fonts/hobby-of-night.ttf"),
-            font_size: 100.0,
-            color: Color::WHITE,
-        },
-    ) // Set the alignment of the Text
-    .with_text_alignment(TextAlignment::Center)
-    // Set the style of the TextBundle itself.
-    .with_style(Style {
-        position_type: PositionType::Absolute,
-        bottom: Val::Px(105.0),
-        right: Val::Px(5.0),
-        ..default()
-    }),
-    EnemyLives::default(),
-));
+) {
+    commands.spawn((
+        // Create a TextBundle that has a Text with a single section.
+        TextBundle::from_section(
+            // Accepts a `String` or any type that converts into a `String`, such as `&str`
+            format!("Enemy lives: {}", lives.enemy_lives),
+            TextStyle {
+                font: asset_server.load("fonts/hobby-of-night.ttf"),
+                font_size: 100.0,
+                color: Color::WHITE,
+            },
+        ) // Set the alignment of the Text
+        .with_text_alignment(TextAlignment::Center)
+        // Set the style of the TextBundle itself.
+        .with_style(Style {
+            position_type: PositionType::Absolute,
+            bottom: Val::Px(105.0),
+            right: Val::Px(5.0),
+            ..default()
+        }),
+        EnemyLives::default(),
+    ));
 
     commands.spawn((
         // Create a TextBundle that has a Text with a single section.
