@@ -24,15 +24,17 @@ use crate::plugins::state::game::states::{GameState, SimulationState};
 /// Game window
 pub struct GamePlugin;
 
+
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(SceneState::InGame), (
+            systems_setup::init_state,
+            systems_setup::add_ground,
             systems_setup::add_player_spawn,
             systems_setup::add_enemy_spawn,
-            systems_setup::add_ground,
             systems_setup::add_hud,
             // systems_setup::add_walls, // TODO: implement collisions and uncomment
-        ))
+        ).chain())
         .add_systems(Update, (
             systems_simulation_state::quit_to_main_menu,
         ).run_if(in_state(SceneState::InGame)))

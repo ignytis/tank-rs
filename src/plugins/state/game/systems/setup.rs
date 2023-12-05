@@ -9,9 +9,18 @@ use crate::plugins::state::game::components::map::Ground;
 use crate::constants;
 
 use crate::plugins::state::game::resources::lives::Lives;
+use crate::plugins::state::game::states::{GameState, SimulationState};
 
 const FLOOR_TEXTURE_HEIGHT: f32 = 300.;
 const FLOOR_TEXTURE_WIDTH: f32 = 300.;
+
+pub fn init_state(
+    mut commands: Commands,
+    mut game_state: ResMut<State<GameState>>,
+    mut sim_state: ResMut<State<SimulationState >>,
+) {
+    commands.insert_resource(Lives::default());
+}
 
 pub fn add_player_spawn(
     mut commands: Commands,
