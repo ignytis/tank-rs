@@ -7,7 +7,6 @@ use rand::Rng;
 
 use crate::constants;
 use crate::plugins::state::game::components::enemy::{Enemy, MovementMode};
-// use crate::plugins::state::game::components::wall_unbreakable::WallUnbreakable; // TODO: implement walls
 use crate::geometry::{azimuth_to_quat_negative_z, vec3_to_azimuth};
 
 // These are the same as player's. Maybe drag them to constant module?
@@ -144,12 +143,3 @@ pub fn collision_with_tanks(
 
     }
 }
-
-// Rotates tanks if they collide with unbreakable walls
-// TODO: implement the logic and add walls in setup system
-// pub fn collision_with_unbreakable_walls(
-//     mut _query_enemies: Query<(&mut Transform, &mut Enemy, Entity), With<Enemy>>,
-//     mut _query_walls: Query<(&mut Transform, &mut WallUnbreakable, Entity), With<WallUnbreakable>>,
-// ) {
-    
-// }

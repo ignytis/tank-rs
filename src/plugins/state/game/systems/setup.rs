@@ -4,7 +4,6 @@ use crate::plugins::state::game::components::hud::{EnemyLives, PlayerLives};
 
 use crate::plugins::state::game::components::spawn_player::SpawnPlayer;
 use crate::plugins::state::game::components::spawn_enemy::SpawnEnemy;
-// use crate::plugins::state::game::components::wall_unbreakable::WallUnbreakable;  // TODO: implement walls
 use crate::plugins::state::game::components::map::Ground;
 use crate::constants;
 
@@ -16,9 +15,9 @@ const FLOOR_TEXTURE_WIDTH: f32 = 300.;
 
 pub fn init_state(
     mut commands: Commands,
-    mut game_state: ResMut<State<GameState>>,
-    mut sim_state: ResMut<State<SimulationState >>,
 ) {
+    commands.insert_resource(NextState(Some(SimulationState::default())));
+    commands.insert_resource(NextState(Some(GameState::default())));
     commands.insert_resource(Lives::default());
 }
 
@@ -128,18 +127,3 @@ pub fn add_hud(
         PlayerLives::default(),
     ));
 }
-// pub fn add_walls(
-//     mut commands: Commands,
-//     asset_server: Res<AssetServer>,
-// ) {
-//     let mut transform = Transform::from_xyz( 100., 0., constants::Z_INDEX_WALL);
-//     transform.rotate_z(1.15);
-//     commands.spawn((
-//         SpriteBundle {
-//             transform,
-//             texture: asset_server.load("sprites/wall_unbreakable_1x2.png"),
-//             ..default()
-//         },
-//         WallUnbreakable::default(),
-//     ));
-// }

@@ -1,6 +1,6 @@
 mod components;
 mod resources;
-mod states;
+pub mod states;
 mod systems;
 
 use bevy::prelude::*;
@@ -33,7 +33,6 @@ impl Plugin for GamePlugin {
             systems_setup::add_player_spawn,
             systems_setup::add_enemy_spawn,
             systems_setup::add_hud,
-            // systems_setup::add_walls, // TODO: implement collisions and uncomment
         ).chain())
         .add_systems(Update, (
             systems_simulation_state::quit_to_main_menu,
