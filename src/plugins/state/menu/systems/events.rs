@@ -25,7 +25,10 @@ pub fn button_events(
                 match menu_item.item_type {
                     MenuItemType::NewGame => commands.insert_resource(NextState(Some(SceneState::InGame))),
                     MenuItemType::LevelEditor => commands.insert_resource(NextState(Some(SceneState::LevelEditor))),
-                    MenuItemType::Exit => app_exit_events.send(bevy::app::AppExit),
+                    MenuItemType::Exit => {
+                        app_exit_events.send(bevy::app::AppExit);
+                        ()
+                    },
                 };
             }
             Interaction::Hovered => {

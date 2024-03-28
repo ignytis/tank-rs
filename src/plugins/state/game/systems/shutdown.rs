@@ -15,5 +15,5 @@ pub fn remove_components(
         With<EnemyLives>, With<Ground>, With<PlayerLives>, With<StatusLabel>, With<SpawnEnemy>,
         With<SpawnPlayer>, With<Player>, With<PlayerShell>, With<EnemyShell>)>>,
 ) {
-    entities.for_each(|e| commands.entity(e).despawn_recursive())
+    entities.iter().for_each(|e| commands.entity(e).despawn_recursive())
 }

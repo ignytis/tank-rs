@@ -79,7 +79,7 @@ impl Plugin for GamePlugin {
             systems_shutdown::remove_components,
         ))
         .insert_resource(Lives::default())
-        .add_state::<GameState>()
-        .add_state::<SimulationState>();
+        .init_state::<GameState>()
+        .init_state::<SimulationState>();
     }
 }

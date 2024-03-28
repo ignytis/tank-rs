@@ -4,7 +4,7 @@ use crate::{plugins::state::game::states::SimulationState, states::SceneState};
 
 pub fn pause_and_resume_game(
     mut commands: Commands,
-    input: Res<Input<KeyCode>>,
+    input: Res<ButtonInput<KeyCode>>,
     state: Res<State<SimulationState>>,
 ) {
     if !input.just_pressed(KeyCode::Space) {
@@ -21,7 +21,7 @@ pub fn pause_and_resume_game(
 
 pub fn quit_to_main_menu(
     mut commands: Commands,
-    input: Res<Input<KeyCode>>,
+    input: Res<ButtonInput<KeyCode>>,
 ) {
     if !input.just_pressed(KeyCode::Escape) {
         return

@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use crate::plugins::state::menu::constants;
 use crate::plugins::state::menu::components::{MenuBlock, MenuItem, MenuItemType};
 
-fn get_button(parent: &mut ChildBuilder<'_, '_, '_>, asset_server: &Res<AssetServer>, item_type: MenuItemType, label: &str) {
+fn get_button(parent: &mut ChildBuilder<'_>, asset_server: &Res<AssetServer>, item_type: MenuItemType, label: &str) {
     parent
         .spawn((
             ButtonBundle {

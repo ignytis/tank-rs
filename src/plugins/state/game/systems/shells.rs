@@ -42,7 +42,7 @@ pub fn enemy_shoot(
 pub fn player_shoot(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    input: Res<Input<KeyCode>>,
+    input: Res<ButtonInput<KeyCode>>,
     mut player_query: Query<(&mut Player, &mut Transform), With<Player>>,
     time: Res<Time>,
 ) {
@@ -125,12 +125,12 @@ pub fn shell_offscreen_despawn(
 fn spawn_tank_explosion(
     commands: &mut Commands,
     asset_server: &Res<AssetServer>,
-    texture_atlases: &mut ResMut<Assets<TextureAtlas>>,
+    texture_atlases: &mut ResMut<Assets<TextureAtlasLayout>>,
     tank_transform: Transform,
 ) {
     let texture_handle = asset_server.load("sprites/animations/tank_explosion.png");
     let texture_atlas =
-        TextureAtlas::from_grid(texture_handle, Vec2::new(constants::TANK_DIMENSION*2., constants::TANK_DIMENSION*2.), 9, 1, None, None);
+        TextureAtlasLayout::from_grid(Vec2::new(constants::TANK_DIMENSION*2., constants::TANK_DIMENSION*2.), 9, 1, None, None);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
     let animation_data = AnimationData { first: 1, last: 8, delete_after_last_frame: true };
 
@@ -138,8 +138,12 @@ fn spawn_tank_explosion(
     transform.translation.z = constants::Z_INDEX_TANK_EXPLOSION;
     commands.spawn((
         SpriteSheetBundle {
-            texture_atlas: texture_atlas_handle,
-            sprite: TextureAtlasSprite::new(animation_data.first),
+            atlas: TextureAtlas {
+                layout: texture_atlas_handle,
+                index: 0,
+            },
+            sprite: Sprite::default(),
+            texture: texture_handle,
             transform,
             ..default()
         },
@@ -152,7 +156,7 @@ fn spawn_tank_explosion(
 pub fn tank_hit_player(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+    mut texture_atlases: ResMut<Assets<TextureAtlasLayout>>,
     mut enemy_shell_query: Query<(Entity, &Transform), With<EnemyShell>>,
     mut player_query: Query<(Entity, &Transform), With<Player>>,
 ) {
@@ -173,7 +177,7 @@ pub fn tank_hit_player(
 pub fn tank_hit_enemy(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+    mut texture_atlases: ResMut<Assets<TextureAtlasLayout>>,
     mut enemy_query: Query<(Entity, &Transform), With<Enemy>>,
     mut player_shell_query: Query<(Entity, &Transform), With<PlayerShell>>,
 ) {

@@ -9,7 +9,7 @@ pub fn animate_sprite(
         Entity,
         &AnimationData,
         &mut AnimationTimer,
-        &mut TextureAtlasSprite,
+        &mut TextureAtlas,
     )>,
 ) {
     for (entity, indices, mut timer, mut sprite) in &mut query {

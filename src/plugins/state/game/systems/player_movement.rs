@@ -13,7 +13,7 @@ const MOVEMENT_FACTOR_FORWARD: f32 = 3.0;
 const ROTATION_FACTOR: f32 = 0.05;
 
 pub fn move_player(
-    input: Res<Input<KeyCode>>,
+    input: Res<ButtonInput<KeyCode>>,
     mut player_query: Query<(&mut Player, &mut Transform), With<Player>>,
 ) {
     let (mut player, mut transform, ) = match player_query.get_single_mut() {
@@ -21,17 +21,17 @@ pub fn move_player(
         Err(_) => return,
     };
 
-    if input.pressed(KeyCode::Up) {
+    if input.pressed(KeyCode::ArrowUp) {
         let v = transform.rotation * Vec3::Y * MOVEMENT_FACTOR_FORWARD;
         transform.translation += v;
-    } else if input.pressed(KeyCode::Down) {
+    } else if input.pressed(KeyCode::ArrowDown) {
         let v = transform.rotation * Vec3::Y * MOVEMENT_FACTOR_BACKWARD * -1.0;
         transform.translation += v;
     } 
 
-    let rotate_to = if input.pressed(KeyCode::Left) {
+    let rotate_to = if input.pressed(KeyCode::ArrowLeft) {
         Some(-1.0_f32 * ROTATION_FACTOR)
-    } else if input.pressed(KeyCode::Right) {
+    } else if input.pressed(KeyCode::ArrowRight) {
         Some(1.0_f32 * ROTATION_FACTOR)
     } else {
         None

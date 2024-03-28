@@ -27,7 +27,7 @@ fn main(){
         GamePlugin,
         MenuPlugin,
     ))
-    .add_state::<states::SceneState>()
+    .init_state::<states::SceneState>()
     .add_systems(Startup, (
         systems_global::setup_window,
         systems_global::setup_framerate,
