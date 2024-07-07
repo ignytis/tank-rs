@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 
-use crate::plugins::state::game::components::hud::StatusLabel;
+use crate::{
+    constants::COLOR_RED,
+    plugins::state::game::components::hud::StatusLabel};
 
 pub fn spawn_player_won_label(
     asset_server: Res<AssetServer>,
@@ -69,7 +71,7 @@ fn spawn_status_label(
                             TextStyle {
                                 font: asset_server.load("fonts/hobby-of-night.ttf"),
                                 font_size: 200.0,
-                                color: Color::RED,  
+                                color: COLOR_RED,  
                             },
                         )
                     );

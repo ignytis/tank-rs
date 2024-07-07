@@ -17,8 +17,8 @@ const FLOOR_TEXTURE_WIDTH: f32 = 300.;
 pub fn init_state(
     mut commands: Commands,
 ) {
-    commands.insert_resource(NextState(Some(SimulationState::default())));
-    commands.insert_resource(NextState(Some(GameState::default())));
+    commands.insert_resource(NextState::Pending(SimulationState::default()));
+    commands.insert_resource(NextState::Pending(GameState::default()));
     commands.insert_resource(Lives::default());
 }
 
@@ -28,7 +28,7 @@ pub fn add_player_spawn(
 ) {
     commands.spawn((
         SpriteBundle {
-            transform: Transform::from_xyz( constants::TANK_DIMENSION/2., constants::WINDOW_HEIGHT / -2. + constants::TANK_DIMENSION, constants::Z_INDEX_SPAWN),
+            transform: Transform::from_xyz( constants::TANK_DIMENSION as f32 / 2., constants::WINDOW_HEIGHT / -2. + constants::TANK_DIMENSION as f32, constants::Z_INDEX_SPAWN),
             texture: asset_server.load("sprites/spawn_player.png"),
             ..default()
         },
@@ -44,8 +44,8 @@ pub fn add_enemy_spawn(
     for i in -1..2 {
         commands.spawn((
             SpriteBundle {
-                transform: Transform::from_xyz( constants::TANK_DIMENSION / 2. + constants::WINDOW_WIDTH / 2.5 * i as f32,
-                    constants::WINDOW_HEIGHT / 2. - constants::TANK_DIMENSION, constants::Z_INDEX_SPAWN),
+                transform: Transform::from_xyz( constants::TANK_DIMENSION as f32 / 2. + constants::WINDOW_WIDTH as f32 / 2.5 * i as f32,
+                    constants::WINDOW_HEIGHT / 2. - constants::TANK_DIMENSION as f32, constants::Z_INDEX_SPAWN),
                 texture: asset_server.load("sprites/spawn_enemy.png"),
                 ..default()
             },

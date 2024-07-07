@@ -25,7 +25,7 @@ pub fn enemy_shoot(
             continue;
         }
 
-        let shell = EnemyShell::new(enemy.azimuth);
+        let shell = EnemyShell::new();
         commands.spawn((
             SpriteBundle {
                 transform: Transform::from_xyz(transl.x, transl.y, constants::Z_INDEX_SHELL)
@@ -60,7 +60,7 @@ pub fn player_shoot(
     }
 
     let azimuth = player.azimuth;
-    let shell = PlayerShell::new(azimuth);
+    let shell = PlayerShell::new();
     let transl = player_transform.translation;
     commands.spawn((
         SpriteBundle {
@@ -130,22 +130,22 @@ fn spawn_tank_explosion(
 ) {
     let texture_handle = asset_server.load("sprites/animations/tank_explosion.png");
     let texture_atlas =
-        TextureAtlasLayout::from_grid(Vec2::new(constants::TANK_DIMENSION*2., constants::TANK_DIMENSION*2.), 9, 1, None, None);
+        TextureAtlasLayout::from_grid(UVec2::new(constants::TANK_DIMENSION*2, constants::TANK_DIMENSION*2), 9, 1, None, None);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
     let animation_data = AnimationData { first: 1, last: 8, delete_after_last_frame: true };
 
     let mut transform = tank_transform;
     transform.translation.z = constants::Z_INDEX_TANK_EXPLOSION;
     commands.spawn((
-        SpriteSheetBundle {
-            atlas: TextureAtlas {
-                layout: texture_atlas_handle,
-                index: 0,
-            },
+        SpriteBundle {
             sprite: Sprite::default(),
             texture: texture_handle,
             transform,
             ..default()
+        },
+        TextureAtlas {
+            layout: texture_atlas_handle,
+            index: 0,
         },
         animation_data,
         AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),

@@ -16,7 +16,7 @@ pub fn pause_and_resume_game(
         SimulationState::Running => SimulationState::Paused,
     };
 
-    commands.insert_resource(NextState(Some(new_state)));
+    commands.insert_resource(NextState::Pending(new_state));
 }
 
 pub fn quit_to_main_menu(
@@ -27,5 +27,5 @@ pub fn quit_to_main_menu(
         return
     }
 
-    commands.insert_resource(NextState(Some(SceneState::MainMenu)));
+    commands.insert_resource(NextState::Pending(SceneState::MainMenu));
 }

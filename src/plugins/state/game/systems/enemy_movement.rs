@@ -10,7 +10,7 @@ use crate::plugins::state::game::components::enemy::{Enemy, MovementMode};
 use crate::geometry::{azimuth_to_quat_negative_z, vec3_to_azimuth};
 
 // These are the same as player's. Maybe drag them to constant module?
-const HALF_ENEMY_SIZE: f32 = constants::TANK_DIMENSION / 2.;
+const HALF_ENEMY_SIZE: f32 = constants::TANK_DIMENSION as f32 / 2.;
 const MOVEMENT_FACTOR_FORWARD: f32 = 3.0;
 const ROTATION_FACTOR: f32 = 0.05;
 
@@ -109,7 +109,7 @@ pub fn collision_with_tanks(
 ) {
     let mut collisions: HashMap<Entity, Vec3> = HashMap::new(); // tank entity + new direction
     for [(transform1, enemy1, entity1), (transform2, enemy2, entity2)] in query.iter_combinations() {
-        if transform1.translation.distance(transform2.translation) > constants::TANK_DIMENSION {
+        if transform1.translation.distance(transform2.translation) > constants::TANK_DIMENSION as f32 {
             continue
         }
 
