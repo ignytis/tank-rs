@@ -137,15 +137,15 @@ fn spawn_tank_explosion(
     let mut transform = tank_transform;
     transform.translation.z = constants::Z_INDEX_TANK_EXPLOSION;
     commands.spawn((
-        SpriteSheetBundle {
-            atlas: TextureAtlas {
-                layout: texture_atlas_handle,
-                index: 0,
-            },
+        SpriteBundle {
             sprite: Sprite::default(),
             texture: texture_handle,
             transform,
             ..default()
+        },
+        TextureAtlas {
+            layout: texture_atlas_handle,
+            index: 0,
         },
         animation_data,
         AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
