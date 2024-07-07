@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+use crate::constants::COLOR_RED;
 use crate::plugins::state::menu::components::{MenuItem, MenuItemType};
 use crate::plugins::state::menu::constants;
 use crate::states::SceneState;
@@ -21,12 +22,12 @@ pub fn button_events(
         match *interaction {
             Interaction::Pressed => {
                 *color = constants::COLOR_BUTTON_PRESSED.into();
-                border_color.0 = Color::RED;
+                border_color.0 = COLOR_RED;
                 match menu_item.item_type {
-                    MenuItemType::NewGame => commands.insert_resource(NextState(Some(SceneState::InGame))),
-                    MenuItemType::LevelEditor => commands.insert_resource(NextState(Some(SceneState::LevelEditor))),
+                    MenuItemType::NewGame => commands.insert_resource(NextState::Pending(SceneState::InGame)),
+                    MenuItemType::LevelEditor => commands.insert_resource(NextState::Pending(SceneState::LevelEditor)),
                     MenuItemType::Exit => {
-                        app_exit_events.send(bevy::app::AppExit);
+                        app_exit_events.send(bevy::app::AppExit::from_code(0));
                         ()
                     },
                 };

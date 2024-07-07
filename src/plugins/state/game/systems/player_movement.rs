@@ -5,7 +5,7 @@ use crate::plugins::state::game::components::player::Player;
 use crate::constants;
 use crate::geometry::azimuth_to_quat_negative_z;
 
-const HALF_PLAYER_SIZE: f32 = constants::TANK_DIMENSION / 2.;
+const HALF_PLAYER_SIZE: f32 = constants::TANK_DIMENSION as f32 / 2.;
 
 
 const MOVEMENT_FACTOR_BACKWARD: f32 = 1.3;

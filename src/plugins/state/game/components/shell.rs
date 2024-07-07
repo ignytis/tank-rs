@@ -2,28 +2,20 @@ use bevy::prelude::*;
 
 /// A shell shot by player
 #[derive(Component)]
-pub struct PlayerShell {
-    pub azimuth: f32,
-}
+pub struct PlayerShell {}
 
 impl PlayerShell {
-    pub fn new(azimuth: f32) -> Self {
-        PlayerShell {
-            azimuth,
-        }
+    pub fn new() -> Self {
+        PlayerShell {}
     }
 }
 
 /// A shell shot by enemy
 #[derive(Component)]
-pub struct EnemyShell {
-    pub azimuth: f32,
-}
+pub struct EnemyShell {}
 
 impl EnemyShell {
-    pub fn new(azimuth: f32) -> Self {
-        EnemyShell {
-            azimuth,
-        }
+    pub fn new() -> Self {
+        EnemyShell {}
     }
 }

@@ -13,9 +13,9 @@ pub fn check_tanks(
     player_query: Query<Entity, With<Player>>,
 ) {
     if 0 == lives.player_lives && player_query.is_empty() {
-        commands.insert_resource(NextState(Some(GameState::GameOver)));
+        commands.insert_resource(NextState::Pending(GameState::GameOver));
     }
     if 0 == lives.enemy_lives && enemy_query.is_empty() {
-        commands.insert_resource(NextState(Some(GameState::PlayerWon)));
+        commands.insert_resource(NextState::Pending(GameState::PlayerWon));
     }
 }
