@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy::window::PrimaryWindow;
 
 use crate::plugins::state::game::components::hud::{EnemyLives, PlayerLives};
 
@@ -59,71 +60,178 @@ pub fn add_ground(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
 ) {
-    let asset = asset_server.load("sprites/ground.png");
-    let repeat_assets_x = (constants::WINDOW_WIDTH / FLOOR_TEXTURE_WIDTH).ceil() as u32;
-    let repeat_assets_y = (constants::WINDOW_HEIGHT / FLOOR_TEXTURE_HEIGHT).ceil() as u32;
+    // let asset = asset_server.load("sprites/ground.png");
+    // let repeat_assets_x = (constants::WINDOW_WIDTH / FLOOR_TEXTURE_WIDTH).ceil() as u32;
+    // let repeat_assets_y = (constants::WINDOW_HEIGHT / FLOOR_TEXTURE_HEIGHT).ceil() as u32;
 
-    for x in 0..repeat_assets_x + 1 {
-        for y in 0..repeat_assets_y + 1 {
-            commands.spawn((
-                SpriteBundle {
-                    transform: Transform::from_xyz( constants::WINDOW_WIDTH / -2. + FLOOR_TEXTURE_WIDTH * x as f32,
-                        constants::WINDOW_HEIGHT / -2. + FLOOR_TEXTURE_HEIGHT * y as f32, constants::Z_INDEX_GROUND),
-                    texture: asset.clone(),
-                    ..default()
-                },
-                Ground::default(),
-            ));
-        }
-    }
+    // for x in 0..repeat_assets_x + 1 {
+    //     for y in 0..repeat_assets_y + 1 {
+    //         commands.spawn((
+    //             SpriteBundle {
+    //                 transform: Transform::from_xyz( constants::WINDOW_WIDTH / -2. + FLOOR_TEXTURE_WIDTH * x as f32,
+    //                     constants::WINDOW_HEIGHT / -2. + FLOOR_TEXTURE_HEIGHT * y as f32, constants::Z_INDEX_GROUND),
+    //                 texture: asset.clone(),
+    //                 ..default()
+    //             },
+    //             Ground::default(),
+    //         ));
+    //     }
+    // }
 }
 
 pub fn add_hud(
     asset_server: Res<AssetServer>,
     mut commands: Commands,
     lives: Res<Lives>,
+    window_query: Query<&Window, With<PrimaryWindow>>,
 ) {
-    commands.spawn((
-        // Create a TextBundle that has a Text with a single section.
-        TextBundle::from_section(
-            // Accepts a `String` or any type that converts into a `String`, such as `&str`
-            format!("Enemy lives: {}", lives.enemy_lives),
-            TextStyle {
-                font: asset_server.load("fonts/hobby-of-night.ttf"),
-                font_size: 100.0,
-                color: Color::WHITE,
+    let window = window_query.get_single().unwrap();
+    commands
+        .spawn(NodeBundle{ // Main container
+            style: Style {
+                display: Display::Flex,
+                flex_direction: FlexDirection::Row,
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
+                // align_items: AlignItems::Center,
+                // justify_content: JustifyContent::Center,
+                ..default()
             },
-        ) // Set the alignment of the Text
-        .with_text_justify(JustifyText::Center)
-        // Set the style of the TextBundle itself.
-        .with_style(Style {
-            position_type: PositionType::Absolute,
-            bottom: Val::Px(105.0),
-            right: Val::Px(5.0),
             ..default()
-        }),
-        EnemyLives::default(),
-    ));
+        })
+        .with_children(|parent| {
+            parent
+                .spawn(NodeBundle{ // Game area
+                    // background_color: BackgroundColor::from(Color::WHITE),
+                    style: Style {
+                        // flex_grow: 4.,
+                        flex_basis: Val::Percent(75.),
+                        ..default()
+                    },
+                    ..default()
+                }).with_children(|parent| {
+                    // let asset = asset_server.load("sprites/ground.png");
+                    // let repeat_assets_x = (constants::WINDOW_WIDTH / FLOOR_TEXTURE_WIDTH).ceil() as u32;
+                    // let repeat_assets_y = (constants::WINDOW_HEIGHT / FLOOR_TEXTURE_HEIGHT).ceil() as u32;
 
-    commands.spawn((
-        // Create a TextBundle that has a Text with a single section.
-        TextBundle::from_section(
-            // Accepts a `String` or any type that converts into a `String`, such as `&str`
-            format!("Player's lives: {}", lives.player_lives),
-            TextStyle {
-                font: asset_server.load("fonts/hobby-of-night.ttf"),
-                font_size: 100.0,
-                color: Color::WHITE,
-            },
-        ) // Set the alignment of the Text
-        .with_text_justify(JustifyText::Center)
-        // Set the style of the TextBundle itself.
-        .with_style(Style {
-            position_type: PositionType::Absolute,
-            bottom: Val::Px(5.0),
-            right: Val::Px(5.0),
-            ..default()
-        }),
-        PlayerLives::default(),
-    ));
+                    
+                    // for x in 0..repeat_assets_x + 1 {
+                    //     for y in 0..repeat_assets_y + 1 {
+                    //         parent.spawn((
+                    //             SpriteBundle {
+                    //                 transform: Transform::from_xyz( constants::WINDOW_WIDTH / -2. + FLOOR_TEXTURE_WIDTH * x as f32,
+                    //                     constants::WINDOW_HEIGHT / -2. + FLOOR_TEXTURE_HEIGHT * y as f32, constants::Z_INDEX_GROUND),
+                    //                 texture: asset.clone(),
+                    //                 ..default()
+                    //             },
+                    //             Ground::default(),
+                    //         ));
+                    //     }
+                    // }
+                });
+
+            parent
+                .spawn(NodeBundle{ // HUD
+                    background_color: BackgroundColor::from(Color::BLACK),
+                    style: Style {
+                        display: Display::Flex,
+                        flex_direction: FlexDirection::Column,
+                        flex_basis: Val::Percent(25.),
+                        // flex_grow: 1.,
+                        ..default()
+                    },
+                    ..default()
+                })
+                .with_children(|parent| {
+                    parent.spawn((
+                        // Create a TextBundle that has a Text with a single section.
+                        TextBundle::from_section(
+                            // Accepts a `String` or any type that converts into a `String`, such as `&str`
+                            format!("Enemy lives: {}", lives.enemy_lives),
+                            TextStyle {
+                                font: asset_server.load("fonts/hobby-of-night.ttf"),
+                                font_size: 50.0,
+                                color: Color::WHITE,
+                            },
+                        ) // Set the alignment of the Text
+                        .with_text_justify(JustifyText::Center)
+                        // Set the style of the TextBundle itself.
+                        .with_style(Style {
+                            // flex_grow: 1.,
+                            // position_type: PositionType::Absolute,
+                            // bottom: Val::Px(105.0),
+                            // right: Val::Px(5.0),
+                            ..default()
+                        }),
+                        EnemyLives::default(),
+                    ));
+                
+                    parent.spawn((
+                        // Create a TextBundle that has a Text with a single section.
+                        TextBundle::from_section(
+                            // Accepts a `String` or any type that converts into a `String`, such as `&str`
+                            format!("Player's lives: {}", lives.player_lives),
+                            TextStyle {
+                                font: asset_server.load("fonts/hobby-of-night.ttf"),
+                                font_size: 50.0,
+                                color: Color::WHITE,
+                            },
+                        ) // Set the alignment of the Text
+                        .with_text_justify(JustifyText::Center)
+                        // Set the style of the TextBundle itself.
+                        .with_style(Style {
+                            // flex_grow: 1.,
+                            // position_type: PositionType::Absolute,
+                            // bottom: Val::Px(5.0),
+                            // right: Val::Px(5.0),
+                            ..default()
+                        }),
+                        PlayerLives::default(),
+                    ));
+                });
+        });
+
+    // commands.spawn((
+    //     // Create a TextBundle that has a Text with a single section.
+    //     TextBundle::from_section(
+    //         // Accepts a `String` or any type that converts into a `String`, such as `&str`
+    //         format!("Enemy lives: {}", lives.enemy_lives),
+    //         TextStyle {
+    //             font: asset_server.load("fonts/hobby-of-night.ttf"),
+    //             font_size: 100.0,
+    //             color: Color::WHITE,
+    //         },
+    //     ) // Set the alignment of the Text
+    //     .with_text_justify(JustifyText::Center)
+    //     // Set the style of the TextBundle itself.
+    //     .with_style(Style {
+    //         position_type: PositionType::Absolute,
+    //         bottom: Val::Px(105.0),
+    //         right: Val::Px(5.0),
+    //         ..default()
+    //     }),
+    //     EnemyLives::default(),
+    // ));
+
+    // commands.spawn((
+    //     // Create a TextBundle that has a Text with a single section.
+    //     TextBundle::from_section(
+    //         // Accepts a `String` or any type that converts into a `String`, such as `&str`
+    //         format!("Player's lives: {}", lives.player_lives),
+    //         TextStyle {
+    //             font: asset_server.load("fonts/hobby-of-night.ttf"),
+    //             font_size: 100.0,
+    //             color: Color::WHITE,
+    //         },
+    //     ) // Set the alignment of the Text
+    //     .with_text_justify(JustifyText::Center)
+    //     // Set the style of the TextBundle itself.
+    //     .with_style(Style {
+    //         position_type: PositionType::Absolute,
+    //         bottom: Val::Px(5.0),
+    //         right: Val::Px(5.0),
+    //         ..default()
+    //     }),
+    //     PlayerLives::default(),
+    // ));
 }
