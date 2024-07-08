@@ -2,7 +2,6 @@ use std::f32::consts::{PI, FRAC_PI_2, TAU};
 
 use bevy::prelude::*;
 use bevy::utils::HashMap;
-use bevy::window::PrimaryWindow;
 use rand::Rng;
 
 use crate::constants;
@@ -56,13 +55,11 @@ pub fn move_enemies(
 /// Changes direction of enemy tank if it reached the screen edge
 pub fn collision_with_field_edges(
     mut query: Query<(&mut Transform, &mut Enemy), With<Enemy>>,
-    window_query: Query<&Window, With<PrimaryWindow>>,
 ) {
-    let window = window_query.get_single().unwrap();
-    let x_min = window.width() / -2.0 + HALF_ENEMY_SIZE;
-    let x_max = window.width() / 2.0 - HALF_ENEMY_SIZE;
-    let y_min = window.height() / -2.0 + HALF_ENEMY_SIZE;
-    let y_max = window.height() / 2.0 - HALF_ENEMY_SIZE;
+    let x_min = constants::WINDOW_X_MIN + HALF_ENEMY_SIZE;
+    let x_max = constants::WINDOW_X_MAX - constants::HUD_WIDTH - HALF_ENEMY_SIZE;
+    let y_min = constants::WINDOW_Y_MIN + HALF_ENEMY_SIZE;
+    let y_max = constants::WINDOW_Y_MAX - HALF_ENEMY_SIZE;
 
     for (mut transform, mut enemy) in query.iter_mut() {
         // Skip if tank is already rotating

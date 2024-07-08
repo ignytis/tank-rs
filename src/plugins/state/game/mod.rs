@@ -29,7 +29,6 @@ impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(SceneState::InGame), (
             systems_setup::init_state,
-            systems_setup::add_ground,
             systems_setup::add_player_spawn,
             systems_setup::add_enemy_spawn,
             systems_setup::add_hud,

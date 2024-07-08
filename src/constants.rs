@@ -5,6 +5,14 @@ pub const FRAMERATE_MAX: f64 = 90.;
 pub const WINDOW_WIDTH: f32 = 1920.;
 pub const WINDOW_HEIGHT: f32 = 1080.;
 
+pub const WINDOW_X_MIN: f32 = WINDOW_WIDTH / -2.0;
+pub const WINDOW_X_MAX: f32 = WINDOW_WIDTH / 2.0;
+pub const WINDOW_Y_MIN: f32 = WINDOW_HEIGHT / -2.0;
+pub const WINDOW_Y_MAX: f32 = WINDOW_HEIGHT / 2.0;
+
+pub const HUD_WIDTH: f32 = 200.0;
+pub const WINDOW_MAIN_AREA_RIGHT_X: f32 = WINDOW_X_MAX  - HUD_WIDTH;
+
 /// Width and height of a tank in pixels. Should equal to sprite dimensions
 pub const TANK_DIMENSION: u32 = 50;
 

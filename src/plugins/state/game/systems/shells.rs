@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy::window::PrimaryWindow;
 
 use crate::plugins::state::game::components::animation::{AnimationTimer, AnimationData};
 use crate::plugins::state::game::components::enemy::Enemy;
@@ -96,13 +95,11 @@ pub fn shell_offscreen_despawn(
     mut commands: Commands,
     mut p_q: Query<(Entity, &Transform), With<PlayerShell>>,
     mut e_q: Query<(Entity, &Transform), With<EnemyShell>>,
-    window_query: Query<&Window, With<PrimaryWindow>>,
 ) {
-    let window = window_query.get_single().unwrap();
-    let x_min = window.width() / -2.0;
-    let x_max = window.width() / 2.0;
-    let y_min = window.height() / -2.0;
-    let y_max = window.height() / 2.0;
+    let x_min = constants::WINDOW_X_MIN;
+    let x_max = constants::WINDOW_X_MAX - constants::HUD_WIDTH;
+    let y_min = constants::WINDOW_Y_MIN;
+    let y_max = constants::WINDOW_Y_MAX;
 
     // Despawn player shells
     for (entity, transform) in p_q.iter_mut() {    
